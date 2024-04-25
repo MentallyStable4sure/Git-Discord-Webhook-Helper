@@ -3,6 +3,7 @@ using MentallyStable.GitlabHelper.Data;
 using MentallyStable.GitlabHelper.Data.Database;
 using MentallyStable.GitlabHelper.Data.Development;
 using MentallyStable.GitlabHelper.Services.Development;
+using MentallyStable.GitlabHelper.Services.Discord.Bot;
 
 namespace MentallyStable.GitlabHelper.Registrators
 {
@@ -12,19 +13,25 @@ namespace MentallyStable.GitlabHelper.Registrators
 
         private Debugger debugger = new Debugger();
         private ServerConfig serverConfig;
+        private DiscordConfig discordConfig;
 
         public async Task Register(WebApplicationBuilder builder)
         {
-            var dbConfig = await LoadDatabaseConfig();
-            var svConfig = await LoadServerConfig();
+            var dbConfig = await LoadConfig("dbconfig.json");
+            var svConfig = await LoadConfig("serverconfig.json");
+            var dsConfig = await LoadConfig("discordconfig.json");
+
             debugger.TryExecute(() => DatabaseConfig = ConvertConfig<DatabaseConfig>(dbConfig), new DebugOptions(this));
             debugger.TryExecute(() => serverConfig = ConvertConfig<ServerConfig>(svConfig), new DebugOptions(this));
+            debugger.TryExecute(() => discordConfig = ConvertConfig<DiscordConfig>(dsConfig), new DebugOptions(this));
+
+            var discordBot = new DiscordBotWrapper(discordConfig);
 
             builder.Services.AddSingleton<ServerConfig>(serverConfig);
+            builder.Services.AddSingleton<DiscordBotWrapper>(discordBot);
         }
 
-        private async Task<string> LoadDatabaseConfig() => await DataGrabber.GrabFromConfigs("dbconfig.json");
-        private async Task<string> LoadServerConfig() => await DataGrabber.GrabFromConfigs("serverconfig.json");
+        private async Task<string> LoadConfig(string config) => await DataGrabber.GrabFromConfigs(config);
 
         private T ConvertConfig<T>(string rawJson) => JsonConvert.DeserializeObject<T>(rawJson);
     }

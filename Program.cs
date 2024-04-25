@@ -3,6 +3,7 @@ using MentallyStable.GitlabHelper.Registrators;
 var builder = WebApplication.CreateBuilder(args);
 ScopeRegistrator scopeRegistrator = new ScopeRegistrator();
 SingleInstanceRegistrator singleInstanceRegistrator = new SingleInstanceRegistrator();
+var discordBot = new DiscordBotWrapper();
 
 // Add services to the container.
 

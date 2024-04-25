@@ -1,0 +1,7 @@
+{
+  "Token": "yourtoken from discord developer portal",
+  "Type": 1, //bot
+  "AutoReconnect": true,
+
+  "CustomGuidID": 0
+}
