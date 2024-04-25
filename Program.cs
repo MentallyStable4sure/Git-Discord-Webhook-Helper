@@ -10,6 +10,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Register our custom services for injection.
+
 await scopeRegistrator.Register(builder);
 await singleInstanceRegistrator.Register(builder);
 
