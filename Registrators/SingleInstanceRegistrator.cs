@@ -29,6 +29,8 @@ namespace MentallyStable.GitlabHelper.Registrators
 
             builder.Services.AddSingleton<ServerConfig>(serverConfig);
             builder.Services.AddSingleton<DiscordBotWrapper>(discordBot);
+
+            await discordBot.Connect().ConfigureAwait(false);
         }
 
         private async Task<string> LoadConfig(string config) => await DataGrabber.GrabFromConfigs(config);
