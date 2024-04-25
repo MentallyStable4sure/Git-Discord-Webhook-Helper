@@ -1,0 +1,17 @@
+{
+  "BearerKey": "your_bearer",
+  "Issuers": [
+    "https://mentallystable4sure.dev/pages/launcher.html",
+    "https://mentallystable4sure.dev/",
+    "https://discord.gg/mentallystable4sure",
+    "look at u, so cool and handsome",
+    "nothing to see here my friend"
+  ],
+  "Audiences": [
+    "https://mentallystable4sure.dev/pages/launcher.html",
+    "https://mentallystable4sure.dev/",
+    "https://discord.gg/mentallystable4sure",
+    "just cause u know what JWT is doesnt mean ur the god himself",
+    "who is this cutie watching my source code? c:"
+  ]
+}
