@@ -5,13 +5,13 @@ using MentallyStable.GitHelper.Services.Discord;
 namespace MentallyStable.GitHelper.Controllers
 {
     [ApiController]
-    [Route("gitlab-catcher")]
-    public class GitLabCatcherController : ControllerBase
+    [Route("git-catcher")]
+    public class GitCatcherController : ControllerBase
     {
-        private readonly ILogger<GitLabCatcherController> _logger;
+        private readonly ILogger<GitCatcherController> _logger;
         private readonly BroadcastDataService _broadcastService;
 
-        public GitLabCatcherController(ILogger<GitLabCatcherController> logger,
+        public GitCatcherController(ILogger<GitCatcherController> logger,
             BroadcastDataService broadcastService)
         {
             _logger = logger;
