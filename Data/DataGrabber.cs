@@ -2,12 +2,12 @@
 {
     public sealed class DataGrabber
     {
-        public const string ContentFolder = "content";
-        public const string ConfigsFolder = "configs";
+        public const string CONTENT_FOLDER = "content";
+        public const string CONFIGS_FOLDER = "configs";
 
-        public static async Task<string> GrabFromConfigs(string configFile) => await GrabFromFile(ConfigsFolder, configFile);
+        public static async Task<string> GrabFromConfigs(string configFile) => await GrabFromFile(CONFIGS_FOLDER, configFile);
 
-        public static async Task<string> GrabFromContent(string contentFile) => await GrabFromFile(ContentFolder, contentFile);
+        public static async Task<string> GrabFromContent(string contentFile) => await GrabFromFile(CONTENT_FOLDER, contentFile);
 
         public static async Task<string> GrabFromFile(string directory, string file)
         {
@@ -23,11 +23,21 @@
         public static FileStream GrabFromContentStream(string contentFile)
         {
             var current = Directory.GetCurrentDirectory();
-            var fullPath = Path.Combine(current, ContentFolder);
+            var fullPath = Path.Combine(current, CONTENT_FOLDER);
 
             if (!Directory.Exists(fullPath)) return (FileStream)FileStream.Null;
 
             return File.OpenRead(fullPath);
+        }
+
+        public static void CreateConfig(string rawJson)
+        {
+            var current = Directory.GetCurrentDirectory();
+            var fullPath = Path.Combine(current, CONFIGS_FOLDER);
+
+            if (!Directory.Exists(fullPath)) Directory.CreateDirectory(fullPath);
+            Console.WriteLine(fullPath);
+            File.WriteAllText(Path.Combine(fullPath, "rawConfig.json"), rawJson);
         }
     }
 }
