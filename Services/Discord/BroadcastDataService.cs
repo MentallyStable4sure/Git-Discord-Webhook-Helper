@@ -33,6 +33,14 @@ namespace MentallyStable.GitHelper.Services.Discord
 
         private async Task CacheChannelsAsync()
         {
+            if (_broadcastData == null || _broadcastData.Count <= 0)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                _debugger.Log("NO CHANNELS TO KEEP TRACK OF FOUND! EDIT YOUR configs/discordbroadcasters.json", new DebugOptions());
+                Console.ResetColor();
+                return;
+            }
+
             foreach (var dataItem in _broadcastData.Values)
             {
                 dataItem.DiscodChannelReference = await _client.GetChannelAsync(dataItem.ChannelID);

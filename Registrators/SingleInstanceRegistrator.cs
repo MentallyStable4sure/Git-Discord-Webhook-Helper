@@ -14,6 +14,8 @@ namespace MentallyStable.GitHelper.Registrators
         private readonly DiscordClient _discordClient;
         private readonly List<IService> _services;
 
+        private readonly BroadcastDataService _broadcastDataService;
+
         public SingleInstanceRegistrator(ConfigsRegistrator configs)
         {
             _debugger = new Debugger();
@@ -22,10 +24,12 @@ namespace MentallyStable.GitHelper.Registrators
             var configSetup = ConvertDiscordConfig(_discordConfig);
             _discordClient = new DiscordClient(configSetup);
 
+            _broadcastDataService = new BroadcastDataService(configs, _discordClient);
+
             _services = new List<IService>()
             {
                 new NewsService(),
-                new BroadcastDataService(configs, _discordClient)
+                _broadcastDataService
             };
         }
 
@@ -38,6 +42,7 @@ namespace MentallyStable.GitHelper.Registrators
             _debugger.TryExecute(() => discordBot = new DiscordBotWrapper(_discordClient, _discordConfig));
 
             builder.Services.AddSingleton<DiscordBotWrapper>(discordBot);
+            builder.Services.AddSingleton<BroadcastDataService>(_broadcastDataService);
 
             StartBot(discordBot);
         }
