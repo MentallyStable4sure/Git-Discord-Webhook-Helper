@@ -1,7 +1,7 @@
 {
-  "Token": "yourtoken from discord developer portal",
+  "Token": "your token",
   "Type": 1, //bot
   "AutoReconnect": true,
 
-  "CustomGuidID": 0
+  "CustomGuidID": 53454354345345345 //custom discord server ID (right click server -> copy ID), it updates faster this way (for testing purposes)
 }
