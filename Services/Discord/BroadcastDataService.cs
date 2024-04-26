@@ -9,7 +9,7 @@ namespace MentallyStable.GitHelper.Services.Discord
 {
     public class BroadcastDataService : IService
     {
-        public Dictionary<ulong, BroadcastData> _broadcastData = new Dictionary<ulong, BroadcastData>();
+        private Dictionary<ulong, BroadcastData> _broadcastData = new Dictionary<ulong, BroadcastData>();
 
         private readonly DiscordClient _client;
         private readonly IDebugger _debugger = new Debugger();
