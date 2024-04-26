@@ -1,40 +1,66 @@
-﻿using Newtonsoft.Json;
-using MentallyStable.GitlabHelper.Data;
-using MentallyStable.GitlabHelper.Data.Database;
-using MentallyStable.GitlabHelper.Data.Development;
-using MentallyStable.GitlabHelper.Services.Development;
-using MentallyStable.GitlabHelper.Services.Discord.Bot;
+﻿using DSharpPlus;
+using MentallyStable.GitHelper.Services;
+using MentallyStable.GitHelper.Data.Database;
+using MentallyStable.GitHelper.Services.Discord;
+using MentallyStable.GitHelper.Services.Development;
+using MentallyStable.GitHelper.Services.Discord.Bot;
 
-namespace MentallyStable.GitlabHelper.Registrators
+namespace MentallyStable.GitHelper.Registrators
 {
     public sealed class SingleInstanceRegistrator : IRegistrator
     {
-        public DatabaseConfig DatabaseConfig { get; private set; }
+        private readonly IDebugger _debugger;
+        private readonly DiscordConfig _discordConfig;
+        private readonly DiscordClient _discordClient;
+        private readonly List<IService> _services;
 
-        private Debugger debugger = new Debugger();
-        private ServerConfig serverConfig;
-        private DiscordConfig discordConfig;
+        public SingleInstanceRegistrator(ConfigsRegistrator configs)
+        {
+            _debugger = new Debugger();
+            _discordConfig = configs.DiscordConfig;
+
+            var configSetup = ConvertDiscordConfig(_discordConfig);
+            _discordClient = new DiscordClient(configSetup);
+
+            _services = new List<IService>()
+            {
+                new NewsService(),
+                new BroadcastDataService(configs, _discordClient)
+            };
+        }
 
         public async Task Register(WebApplicationBuilder builder)
         {
-            var dbConfig = await LoadConfig("dbconfig.json");
-            var svConfig = await LoadConfig("serverconfig.json");
-            var dsConfig = await LoadConfig("discordconfig.json");
+            await RegisterCustomServices(_services);
 
-            debugger.TryExecute(() => DatabaseConfig = ConvertConfig<DatabaseConfig>(dbConfig), new DebugOptions(this));
-            debugger.TryExecute(() => serverConfig = ConvertConfig<ServerConfig>(svConfig), new DebugOptions(this));
-            debugger.TryExecute(() => discordConfig = ConvertConfig<DiscordConfig>(dsConfig), new DebugOptions(this));
+            DiscordBotWrapper discordBot = null;
 
-            var discordBot = new DiscordBotWrapper(discordConfig);
+            _debugger.TryExecute(() => discordBot = new DiscordBotWrapper(_discordClient, _discordConfig));
 
-            builder.Services.AddSingleton<ServerConfig>(serverConfig);
             builder.Services.AddSingleton<DiscordBotWrapper>(discordBot);
 
-            await discordBot.Connect().ConfigureAwait(false);
+            StartBot(discordBot);
         }
 
-        private async Task<string> LoadConfig(string config) => await DataGrabber.GrabFromConfigs(config);
+        private void StartBot(DiscordBotWrapper discordWrapper) => discordWrapper.Connect().ConfigureAwait(false);
 
-        private T ConvertConfig<T>(string rawJson) => JsonConvert.DeserializeObject<T>(rawJson);
+        private async Task RegisterCustomServices(List<IService> services)
+        {
+            foreach (var service in services)
+            {
+                await service.InitializeService();
+            }
+        }
+
+        private DiscordConfiguration ConvertDiscordConfig(DiscordConfig config)
+        {
+            return new DiscordConfiguration()
+            {
+                Token = config.Token,
+                TokenType = (TokenType)config.Type,
+                AutoReconnect = config.AutoReconnect,
+                Intents = DiscordIntents.AllUnprivileged
+            };
+        }
     }
 }

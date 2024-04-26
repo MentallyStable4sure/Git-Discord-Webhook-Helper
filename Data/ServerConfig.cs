@@ -1,4 +1,4 @@
-﻿namespace MentallyStable.GitlabHelper.Data
+﻿namespace MentallyStable.GitHelper.Data
 {
     public class ServerConfig
     {

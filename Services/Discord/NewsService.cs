@@ -1,9 +1,9 @@
 ﻿using DSharpPlus.Entities;
-using MentallyStable.GitlabHelper.Extensions;
+using MentallyStable.GitHelper.Extensions;
 
-namespace MentallyStable.GitlabHelper.Services.Discord
+namespace MentallyStable.GitHelper.Services.Discord
 {
-    public class NewsService
+    public class NewsService : IService
     {
         public const string FULL_NEWS_IMAGE = "http://93.127.202.154/img/news.png";
         public const string SHORT_NEWS_IMAGE = "http://93.127.202.154/img/news-short.png";
@@ -18,5 +18,7 @@ namespace MentallyStable.GitlabHelper.Services.Discord
                 imageUrl,
                 url, author);
         }
+
+        public Task InitializeService() => Task.CompletedTask;
     }
 }

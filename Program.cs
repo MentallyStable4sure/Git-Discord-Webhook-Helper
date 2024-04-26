@@ -1,19 +1,31 @@
-using MentallyStable.GitlabHelper.Registrators;
+using MentallyStable.GitHelper.Registrators;
+using MentallyStable.GitHelper.Services;
+using MentallyStable.GitHelper.Services.Discord;
+using MentallyStable.GitHelper.Services.Discord.Bot;
 
 var builder = WebApplication.CreateBuilder(args);
-ScopeRegistrator scopeRegistrator = new ScopeRegistrator();
-SingleInstanceRegistrator singleInstanceRegistrator = new SingleInstanceRegistrator();
+
+var configs = new ConfigsRegistrator();
+await configs.Register(builder);
+
+var registrators = new List<IRegistrator>()
+{
+    new ScopeRegistrator(),
+    new SingleInstanceRegistrator(configs)
+};
+
+// Register our custom services for injection.
+
+foreach (var registrator in registrators)
+{
+    await registrator.Register(builder);
+}
 
 // Add services to the container.
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-// Register our custom services for injection.
-
-await scopeRegistrator.Register(builder);
-await singleInstanceRegistrator.Register(builder);
 
 var app = builder.Build();
 
@@ -24,7 +36,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseAuthorization();
+//app.UseAuthorization(); //For anyone who want claims/role-based auth
 //app.UseHttpsRedirection(); //For anyone who is using HTTPS (im not)
 app.MapControllers();
 

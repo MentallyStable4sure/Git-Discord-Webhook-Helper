@@ -1,23 +1,19 @@
 ﻿using System.Reflection;
 using DSharpPlus;
 using DSharpPlus.SlashCommands;
-using MentallyStable.GitlabHelper.Data.Database;
+using MentallyStable.GitHelper.Data.Database;
 
-namespace MentallyStable.GitlabHelper.Services.Discord.Bot
+namespace MentallyStable.GitHelper.Services.Discord.Bot
 {
     public class DiscordBotWrapper
     {
+        public CancellationTokenSource CancellationTokenSource = new CancellationTokenSource();
+
         public readonly DiscordClient Discord;
 
-        public DiscordBotWrapper(DiscordConfig config)
+        public DiscordBotWrapper(DiscordClient client, DiscordConfig config)
         {
-            var configSetup = new DiscordConfiguration()
-            {
-                Token = config.Token,
-                TokenType = (TokenType)config.Type,
-                AutoReconnect = config.AutoReconnect,
-                Intents = DiscordIntents.AllUnprivileged
-            };
+            //Injected additional classes for slash commands itself (not services, they use different scoped injection):
 
             var services = new ServiceCollection()
                 .AddSingleton<Random>()
@@ -25,7 +21,7 @@ namespace MentallyStable.GitlabHelper.Services.Discord.Bot
 
             var servicesConfig = new SlashCommandsConfiguration() { Services = services };
 
-            Discord = new DiscordClient(configSetup);
+            Discord = client;
             var slash = Discord.UseSlashCommands(servicesConfig);
 
             slash.RegisterCommands(Assembly.GetAssembly(typeof(Program)), config.CustomGuidID > 0 ? config.CustomGuidID : null);
@@ -33,8 +29,17 @@ namespace MentallyStable.GitlabHelper.Services.Discord.Bot
 
         public async Task Connect()
         {
+            CancellationTokenSource = new CancellationTokenSource();
+
             await Discord.ConnectAsync();
-            await Task.Delay(-1);
+            await Task.Delay(-1, CancellationTokenSource.Token);
+        }
+
+        public async Task Disconnect()
+        {
+            await Discord.DisconnectAsync();
+            CancellationTokenSource?.Cancel();
+            CancellationTokenSource?.Dispose();
         }
     }
 }
