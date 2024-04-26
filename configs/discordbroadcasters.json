@@ -1,24 +1,2 @@
 {
-  "44921986007084": {
-    "ChannelID": 44921986007084,
-    "PrefixesToTrack": [
-      "demo",
-      "experimental",
-      "test"
-    ],
-    "ActionsToTrack": [
-      1
-    ]
-  },
-  "14781894232268": {
-    "ChannelID": 14781894232268,
-    "PrefixesToTrack": [
-      "hotfix",
-      "fix",
-      "feature"
-    ],
-    "ActionsToTrack": [
-      1
-    ]
-  }
 }
