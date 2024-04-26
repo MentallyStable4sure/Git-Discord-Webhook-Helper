@@ -27,11 +27,9 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
+app.UseDefaultFiles();
 
 //app.UseAuthorization(); //For anyone who want claims/role-based auth
 //app.UseHttpsRedirection(); //For anyone who is using HTTPS (im not)
