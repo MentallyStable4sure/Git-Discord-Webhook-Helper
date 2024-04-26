@@ -1,6 +1,6 @@
 ﻿using DSharpPlus;
-using MentallyStable.GitlabHelper.Data.Database;
 using MentallyStable.GitlabHelper.Services;
+using MentallyStable.GitlabHelper.Data.Database;
 using MentallyStable.GitlabHelper.Services.Discord;
 using MentallyStable.GitlabHelper.Services.Development;
 using MentallyStable.GitlabHelper.Services.Discord.Bot;

@@ -4,7 +4,7 @@ using MentallyStable.GitlabHelper.Data;
 using MentallyStable.GitlabHelper.Data.Git;
 using MentallyStable.GitlabHelper.Data.Discord;
 
-namespace MentallyStable.GitlabHelper.Services.Discord
+namespace MentallyStable.GitlabHelper.Helpers
 {
     public class BroadcasterHelper
     {
