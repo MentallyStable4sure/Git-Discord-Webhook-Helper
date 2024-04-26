@@ -87,6 +87,12 @@ namespace MentallyStable.GitHelper.Services.Discord
             await channel.SendMessageAsync(message);
         }
 
+        public async Task BroadcastMessageTo(ulong channelID, DiscordMessageBuilder message)
+        {
+            var channel = await _client.GetChannelAsync(channelID);
+            await channel.SendMessageAsync(message);
+        }
+
         private async Task CacheChannelsAsync()
         {
             if (_broadcastData == null || _broadcastData.Count <= 0)
