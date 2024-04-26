@@ -3,7 +3,7 @@ using MentallyStable.GitlabHelper.Extensions;
 
 namespace MentallyStable.GitlabHelper.Services.Discord
 {
-    public class NewsService
+    public class NewsService : IService
     {
         public const string FULL_NEWS_IMAGE = "http://93.127.202.154/img/news.png";
         public const string SHORT_NEWS_IMAGE = "http://93.127.202.154/img/news-short.png";
@@ -18,5 +18,7 @@ namespace MentallyStable.GitlabHelper.Services.Discord
                 imageUrl,
                 url, author);
         }
+
+        public Task InitializeService() => Task.CompletedTask;
     }
 }
