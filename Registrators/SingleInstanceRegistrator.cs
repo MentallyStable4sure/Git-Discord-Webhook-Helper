@@ -1,11 +1,11 @@
 ﻿using DSharpPlus;
-using MentallyStable.GitlabHelper.Services;
-using MentallyStable.GitlabHelper.Data.Database;
-using MentallyStable.GitlabHelper.Services.Discord;
-using MentallyStable.GitlabHelper.Services.Development;
-using MentallyStable.GitlabHelper.Services.Discord.Bot;
+using MentallyStable.GitHelper.Services;
+using MentallyStable.GitHelper.Data.Database;
+using MentallyStable.GitHelper.Services.Discord;
+using MentallyStable.GitHelper.Services.Development;
+using MentallyStable.GitHelper.Services.Discord.Bot;
 
-namespace MentallyStable.GitlabHelper.Registrators
+namespace MentallyStable.GitHelper.Registrators
 {
     public sealed class SingleInstanceRegistrator : IRegistrator
     {

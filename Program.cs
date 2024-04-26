@@ -1,7 +1,7 @@
-using MentallyStable.GitlabHelper.Registrators;
-using MentallyStable.GitlabHelper.Services;
-using MentallyStable.GitlabHelper.Services.Discord;
-using MentallyStable.GitlabHelper.Services.Discord.Bot;
+using MentallyStable.GitHelper.Registrators;
+using MentallyStable.GitHelper.Services;
+using MentallyStable.GitHelper.Services.Discord;
+using MentallyStable.GitHelper.Services.Discord.Bot;
 
 var builder = WebApplication.CreateBuilder(args);
 

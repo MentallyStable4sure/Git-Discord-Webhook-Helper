@@ -1,10 +1,10 @@
 ﻿
 using Newtonsoft.Json;
-using MentallyStable.GitlabHelper.Data;
-using MentallyStable.GitlabHelper.Data.Git;
-using MentallyStable.GitlabHelper.Data.Discord;
+using MentallyStable.GitHelper.Data;
+using MentallyStable.GitHelper.Data.Git;
+using MentallyStable.GitHelper.Data.Discord;
 
-namespace MentallyStable.GitlabHelper.Helpers
+namespace MentallyStable.GitHelper.Helpers
 {
     public class BroadcasterHelper
     {

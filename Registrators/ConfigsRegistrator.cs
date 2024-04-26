@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
-using MentallyStable.GitlabHelper.Data;
-using MentallyStable.GitlabHelper.Data.Discord;
-using MentallyStable.GitlabHelper.Data.Database;
-using MentallyStable.GitlabHelper.Data.Development;
-using MentallyStable.GitlabHelper.Services.Development;
+using MentallyStable.GitHelper.Data;
+using MentallyStable.GitHelper.Data.Discord;
+using MentallyStable.GitHelper.Data.Database;
+using MentallyStable.GitHelper.Data.Development;
+using MentallyStable.GitHelper.Services.Development;
 
-namespace MentallyStable.GitlabHelper.Registrators
+namespace MentallyStable.GitHelper.Registrators
 {
     public sealed class ConfigsRegistrator : IRegistrator
     {

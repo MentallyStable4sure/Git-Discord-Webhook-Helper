@@ -1,6 +1,6 @@
 ﻿using DSharpPlus;
 
-namespace MentallyStable.GitlabHelper.Data.Database
+namespace MentallyStable.GitHelper.Data.Database
 {
     public class DiscordConfig
     {

@@ -1,7 +1,7 @@
 ﻿using DSharpPlus.Entities;
-using MentallyStable.GitlabHelper.Extensions;
+using MentallyStable.GitHelper.Extensions;
 
-namespace MentallyStable.GitlabHelper.Services.Discord
+namespace MentallyStable.GitHelper.Services.Discord
 {
     public class NewsService : IService
     {

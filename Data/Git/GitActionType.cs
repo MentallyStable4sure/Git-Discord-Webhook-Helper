@@ -1,4 +1,4 @@
-﻿namespace MentallyStable.GitlabHelper.Data.Git
+﻿namespace MentallyStable.GitHelper.Data.Git
 {
     public enum GitActionType
     {

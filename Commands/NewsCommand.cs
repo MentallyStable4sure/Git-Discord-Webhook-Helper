@@ -1,10 +1,10 @@
 ﻿using System;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
-using MentallyStable.GitlabHelper.Extensions;
-using MentallyStable.GitlabHelper.Services.Discord;
+using MentallyStable.GitHelper.Extensions;
+using MentallyStable.GitHelper.Services.Discord;
 
-namespace MentallyStable.GitlabHelper.Commands
+namespace MentallyStable.GitHelper.Commands
 {
     public class NewsCommand : ApplicationCommandModule
     {

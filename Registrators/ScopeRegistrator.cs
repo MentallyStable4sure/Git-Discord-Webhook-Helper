@@ -1,6 +1,6 @@
-﻿using MentallyStable.GitlabHelper.Services.Development;
+﻿using MentallyStable.GitHelper.Services.Development;
 
-namespace MentallyStable.GitlabHelper.Registrators
+namespace MentallyStable.GitHelper.Registrators
 {
     public class ScopeRegistrator : IRegistrator
     {

@@ -1,11 +1,11 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
-using MentallyStable.GitlabHelper.Data.Discord;
-using MentallyStable.GitlabHelper.Registrators;
-using MentallyStable.GitlabHelper.Data.Development;
-using MentallyStable.GitlabHelper.Services.Development;
+using MentallyStable.GitHelper.Data.Discord;
+using MentallyStable.GitHelper.Registrators;
+using MentallyStable.GitHelper.Data.Development;
+using MentallyStable.GitHelper.Services.Development;
 
-namespace MentallyStable.GitlabHelper.Services.Discord
+namespace MentallyStable.GitHelper.Services.Discord
 {
     public class BroadcastDataService : IService
     {
@@ -13,8 +13,6 @@ namespace MentallyStable.GitlabHelper.Services.Discord
 
         private readonly DiscordClient _client;
         private readonly IDebugger _debugger = new Debugger();
-
-        public const string BROADCAST_DATA_CONFIG = "discordbroadcasters.json";
 
         public BroadcastDataService(ConfigsRegistrator configs, DiscordClient client)
         {

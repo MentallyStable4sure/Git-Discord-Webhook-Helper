@@ -1,9 +1,9 @@
 ﻿using System.Reflection;
 using DSharpPlus;
 using DSharpPlus.SlashCommands;
-using MentallyStable.GitlabHelper.Data.Database;
+using MentallyStable.GitHelper.Data.Database;
 
-namespace MentallyStable.GitlabHelper.Services.Discord.Bot
+namespace MentallyStable.GitHelper.Services.Discord.Bot
 {
     public class DiscordBotWrapper
     {

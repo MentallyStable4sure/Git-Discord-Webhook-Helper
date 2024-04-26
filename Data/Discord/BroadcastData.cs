@@ -1,9 +1,9 @@
 ﻿
 using Newtonsoft.Json;
 using DSharpPlus.Entities;
-using MentallyStable.GitlabHelper.Data.Git;
+using MentallyStable.GitHelper.Data.Git;
 
-namespace MentallyStable.GitlabHelper.Data.Discord
+namespace MentallyStable.GitHelper.Data.Discord
 {
     public class BroadcastData
     {
