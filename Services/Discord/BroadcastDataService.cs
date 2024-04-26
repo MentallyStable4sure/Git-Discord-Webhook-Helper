@@ -1,5 +1,7 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
+using MentallyStable.GitHelper.Helpers;
+using MentallyStable.GitHelper.Data.Git;
 using MentallyStable.GitHelper.Data.Discord;
 using MentallyStable.GitHelper.Registrators;
 using MentallyStable.GitHelper.Data.Development;
@@ -27,9 +29,63 @@ namespace MentallyStable.GitHelper.Services.Discord
             await _debugger.TryExecuteAsync(CacheChannelsAsync(), new DebugOptions(this, nameof(CacheChannelsAsync)));
         }
 
-        public DiscordChannel GetChannel(string channelID) => _broadcastData[ulong.Parse(channelID)].DiscodChannelReference;
-        public DiscordChannel GetChannel(ulong channelID) => _broadcastData[channelID].DiscodChannelReference;
+        public DiscordChannel GetChannel(string channelID) => _broadcastData[ulong.Parse(channelID)]?.DiscodChannelReference;
+        public DiscordChannel GetChannel(ulong channelID) => _broadcastData[channelID]?.DiscodChannelReference;
         public DiscordChannel GetChannel(BroadcastData data) => GetChannel(data.ChannelID);
+
+        public List<DiscordChannel> GetChannels(string[] prefixes)
+        {
+            var channels = new List<DiscordChannel>();
+            foreach (var data in _broadcastData.Values)
+            {
+                foreach (var prefixInData in data.PrefixesToTrack)
+                {
+                    if (!prefixes.Any(element => element == prefixInData)) continue;
+
+                    var duplicate = channels.FirstOrDefault(channelToSeek => data.ChannelID == channelToSeek.Id);
+                    if (duplicate != null) continue;
+
+                    channels.Add(data.DiscodChannelReference);
+                }
+            }
+
+            return channels;
+        }
+
+        public List<DiscordChannel> GetChannels(GitActionType[] actions)
+        {
+            var channels = new List<DiscordChannel>();
+            foreach (var data in _broadcastData.Values)
+            {
+                foreach (var action in data.ActionsToTrack)
+                {
+                    if (!actions.Any(element => element == action)) continue;
+
+                    var duplicate = channels.FirstOrDefault(channelToSeek => data.ChannelID == channelToSeek.Id);
+                    if (duplicate != null) continue;
+
+                    channels.Add(data.DiscodChannelReference);
+                }
+            }
+
+            return channels;
+        }
+
+        public async Task BroadcastMessageAccordingToPrefix(string[] prefixes, string message)
+        {
+            await GetChannels(prefixes).BroadcastToAll(message);
+        }
+
+        public async Task BroadcastMessageAccordingToType(GitActionType[] types, string message)
+        {
+            await GetChannels(types).BroadcastToAll(message);
+        }
+
+        public async Task BroadcastMessageTo(ulong channelID, string message)
+        {
+            var channel = await _client.GetChannelAsync(channelID);
+            await channel.SendMessageAsync(message);
+        }
 
         private async Task CacheChannelsAsync()
         {

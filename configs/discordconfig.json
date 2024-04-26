@@ -3,5 +3,6 @@
   "Type": 1, //bot
   "AutoReconnect": true,
 
-  "CustomGuidID": 53454354345345345 //custom discord server ID (right click server -> copy ID), it updates faster this way (for testing purposes)
+  "CustomGuidID": 0, //custom discord server ID (right click server -> copy ID), it updates faster this way (for testing purposes)
+  "CatchAllAPI_ID": 0 //custom discord chat ID (right click chat -> copy ID), it will push all messages there (for testing purposes)
 }

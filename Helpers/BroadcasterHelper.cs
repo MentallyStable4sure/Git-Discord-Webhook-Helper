@@ -1,13 +1,34 @@
 ﻿
 using Newtonsoft.Json;
+using DSharpPlus.Entities;
 using MentallyStable.GitHelper.Data;
 using MentallyStable.GitHelper.Data.Git;
 using MentallyStable.GitHelper.Data.Discord;
 
 namespace MentallyStable.GitHelper.Helpers
 {
-    public class BroadcasterHelper
+    public static class BroadcasterHelper
     {
+        public static async Task BroadcastToAll(this DiscordChannel[] discordChannels, string message)
+        {
+            if (discordChannels == null || discordChannels.Length <= 0) return;
+
+            foreach (var channelToBroadcast in discordChannels)
+            {
+                await channelToBroadcast.SendMessageAsync(message);
+            }
+        }
+
+        public static async Task BroadcastToAll(this List<DiscordChannel> discordChannels, string message)
+        {
+            if (discordChannels == null || discordChannels.Count <= 0) return;
+
+            foreach (var channelToBroadcast in discordChannels)
+            {
+                await channelToBroadcast.SendMessageAsync(message);
+            }
+        }
+
         public static Dictionary<ulong, BroadcastData> CreateDummyBroadcasterList(int dummyCount = 10)
         {
             var dataList = new Dictionary<ulong, BroadcastData>();
