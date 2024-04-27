@@ -11,13 +11,9 @@ namespace MentallyStable.GitHelper.Services.Discord.Bot
 
         public readonly DiscordClient Discord;
 
-        public DiscordBotWrapper(DiscordClient client, DiscordConfig config)
+        public DiscordBotWrapper(DiscordClient client, DiscordConfig config, ServiceProvider services)
         {
             //Injected additional classes for slash commands itself (not services, they use different scoped injection):
-
-            var services = new ServiceCollection()
-                .AddSingleton<Random>()
-                .BuildServiceProvider();
 
             var servicesConfig = new SlashCommandsConfiguration() { Services = services };
 

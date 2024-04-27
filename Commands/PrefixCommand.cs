@@ -9,7 +9,7 @@ namespace MentallyStable.GitHelper.Commands
         public BroadcastDataService BroadcastDataService { get; set; }
         public TrackingService TrackingService { get; set; }
 
-        [SlashCommand("track-addprefix", "adds prefix to track on this channel (creates a tracking if channel wasnt tracked)")]
+        [SlashCommand("addprefix", "adds prefix to track on this channel (creates a tracking if channel wasnt tracked)")]
         public async Task AddPrefix(InteractionContext ctx, [Option("Prefix", "Additional prefix (if this channel has any, if not - creates track step) to track on this channel")] string prefix)
         {
             string message = string.Empty;
@@ -30,7 +30,7 @@ namespace MentallyStable.GitHelper.Commands
             await ctx.CreateResponseAsync(message);
         }
 
-        [SlashCommand("untrack-addprefix", "adds prefix to track on this channel (creates a tracking if channel wasnt tracked)")]
+        [SlashCommand("removeprefix", "adds prefix to track on this channel (creates a tracking if channel wasnt tracked)")]
         public async Task RemovePrefix(InteractionContext ctx, [Option("Prefix", "Additional prefix (if this channel has any, if not - creates track step) to track on this channel")] string prefix)
         {
             string message = string.Empty;

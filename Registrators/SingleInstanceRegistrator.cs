@@ -32,16 +32,17 @@ namespace MentallyStable.GitHelper.Registrators
             _services = new List<IService>()
             {
                 _broadcastDataService,
+                _trackingService
             };
         }
 
         public async Task Register(WebApplicationBuilder builder)
         {
-            await InitializeCustomServices(_services);
+            var servicesProvider = await InitializeCustomServices(_services);
 
             DiscordBotWrapper discordBot = null;
 
-            _debugger.TryExecute(() => discordBot = new DiscordBotWrapper(_discordClient, _discordConfig), new DebugOptions(this, typeof(DiscordBotWrapper).Name));
+            _debugger.TryExecute(() => discordBot = new DiscordBotWrapper(_discordClient, _discordConfig, servicesProvider), new DebugOptions(this, typeof(DiscordBotWrapper).Name));
 
             builder.Services.AddSingleton<DiscordBotWrapper>(discordBot);
             builder.Services.AddSingleton<BroadcastDataService>(_broadcastDataService);
@@ -64,12 +65,15 @@ namespace MentallyStable.GitHelper.Registrators
             discordWrapper.Connect().ConfigureAwait(false);
         }
 
-        private async Task InitializeCustomServices(List<IService> services)
+        private async Task<ServiceProvider> InitializeCustomServices(List<IService> services)
         {
+            ServiceCollection collection = new ServiceCollection();
             foreach (var service in services)
             {
                 await service.InitializeService();
+                collection.AddSingleton(service.GetType(), service);
             }
+            return collection.BuildServiceProvider();
         }
 
         private DiscordConfiguration ConvertDiscordConfig(DiscordConfig config)

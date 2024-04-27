@@ -7,7 +7,7 @@ using MentallyStable.GitHelper.Data.Database;
 
 namespace MentallyStable.GitHelper.Services.Discord
 {
-    public class TrackingService
+    public class TrackingService : IService
     {
         private readonly DiscordClient _client;
         
@@ -18,6 +18,8 @@ namespace MentallyStable.GitHelper.Services.Discord
             _client = client;
             _broadcastData = broadcastData;
         }
+
+        public Task InitializeService() => Task.CompletedTask;
 
         /// <summary>
         /// NOT Recommended due to double async getter of a channel from client, if you already have a channel reference
