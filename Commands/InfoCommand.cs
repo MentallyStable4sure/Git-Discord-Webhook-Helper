@@ -1,7 +1,7 @@
 ﻿using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
-using MentallyStable.GitHelper.Data.Database;
 using MentallyStable.GitHelper.Extensions;
+using MentallyStable.GitHelper.Data.Database;
 using MentallyStable.GitHelper.Services.Discord;
 
 namespace MentallyStable.GitHelper.Commands
