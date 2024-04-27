@@ -2,7 +2,6 @@
 using DSharpPlus.Entities;
 using MentallyStable.GitHelper.Helpers;
 using MentallyStable.GitHelper.Data.Discord;
-using MentallyStable.GitHelper.Registrators;
 using MentallyStable.GitHelper.Data.Development;
 using MentallyStable.GitHelper.Services.Development;
 
@@ -15,9 +14,9 @@ namespace MentallyStable.GitHelper.Services.Discord
         private readonly DiscordClient _client;
         private readonly IDebugger _debugger = new Debugger();
 
-        public BroadcastDataService(ConfigsRegistrator configs, DiscordClient client)
+        public BroadcastDataService(Dictionary<ulong, BroadcastData> broadcastData, DiscordClient client)
         {
-            _broadcastData = configs.BroadcastData;
+            _broadcastData = broadcastData;
             _client = client;
         }
 

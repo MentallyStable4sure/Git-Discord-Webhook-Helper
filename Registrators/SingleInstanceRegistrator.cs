@@ -5,8 +5,6 @@ using MentallyStable.GitHelper.Data.Development;
 using MentallyStable.GitHelper.Services.Discord;
 using MentallyStable.GitHelper.Services.Development;
 using MentallyStable.GitHelper.Services.Discord.Bot;
-using System.Net;
-using System;
 
 namespace MentallyStable.GitHelper.Registrators
 {
@@ -18,6 +16,7 @@ namespace MentallyStable.GitHelper.Registrators
         private readonly List<IService> _services;
 
         private readonly BroadcastDataService _broadcastDataService;
+        private readonly TrackingService _trackingService;
 
         public SingleInstanceRegistrator(ConfigsRegistrator configs)
         {
@@ -27,7 +26,8 @@ namespace MentallyStable.GitHelper.Registrators
             var configSetup = ConvertDiscordConfig(_discordConfig);
             _discordClient = new DiscordClient(configSetup);
 
-            _broadcastDataService = new BroadcastDataService(configs, _discordClient);
+            _broadcastDataService = new BroadcastDataService(configs.BroadcastData, _discordClient);
+            _trackingService = new TrackingService(_discordClient, configs.BroadcastData);
 
             _services = new List<IService>()
             {
@@ -45,6 +45,7 @@ namespace MentallyStable.GitHelper.Registrators
 
             builder.Services.AddSingleton<DiscordBotWrapper>(discordBot);
             builder.Services.AddSingleton<BroadcastDataService>(_broadcastDataService);
+            builder.Services.AddSingleton<TrackingService>(_trackingService);
 
             StartBot(discordBot);
         }
