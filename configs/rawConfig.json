@@ -1,0 +1,14 @@
+{
+  "15639502479426": {
+    "ChannelID": 15639502479426,
+    "PrefixesToTrack": [
+      "feature"
+    ]
+  },
+  "24672690104498": {
+    "ChannelID": 24672690104498,
+    "PrefixesToTrack": [
+      "hotfix"
+    ]
+  }
+}
