@@ -5,8 +5,6 @@ using MentallyStable.GitHelper.Data.Development;
 using MentallyStable.GitHelper.Services.Discord;
 using MentallyStable.GitHelper.Services.Development;
 using MentallyStable.GitHelper.Services.Discord.Bot;
-using System.Net;
-using System;
 
 namespace MentallyStable.GitHelper.Registrators
 {
@@ -18,6 +16,7 @@ namespace MentallyStable.GitHelper.Registrators
         private readonly List<IService> _services;
 
         private readonly BroadcastDataService _broadcastDataService;
+        private readonly TrackingService _trackingService;
 
         public SingleInstanceRegistrator(ConfigsRegistrator configs)
         {
@@ -27,24 +26,27 @@ namespace MentallyStable.GitHelper.Registrators
             var configSetup = ConvertDiscordConfig(_discordConfig);
             _discordClient = new DiscordClient(configSetup);
 
-            _broadcastDataService = new BroadcastDataService(configs, _discordClient);
+            _broadcastDataService = new BroadcastDataService(configs.BroadcastData, _discordClient);
+            _trackingService = new TrackingService(_discordClient, configs.BroadcastData);
 
             _services = new List<IService>()
             {
                 _broadcastDataService,
+                _trackingService
             };
         }
 
         public async Task Register(WebApplicationBuilder builder)
         {
-            await InitializeCustomServices(_services);
+            var servicesProvider = await InitializeCustomServices(_services);
 
             DiscordBotWrapper discordBot = null;
 
-            _debugger.TryExecute(() => discordBot = new DiscordBotWrapper(_discordClient, _discordConfig), new DebugOptions(this, typeof(DiscordBotWrapper).Name));
+            _debugger.TryExecute(() => discordBot = new DiscordBotWrapper(_discordClient, _discordConfig, servicesProvider), new DebugOptions(this, typeof(DiscordBotWrapper).Name));
 
             builder.Services.AddSingleton<DiscordBotWrapper>(discordBot);
             builder.Services.AddSingleton<BroadcastDataService>(_broadcastDataService);
+            builder.Services.AddSingleton<TrackingService>(_trackingService);
 
             StartBot(discordBot);
         }
@@ -63,12 +65,15 @@ namespace MentallyStable.GitHelper.Registrators
             discordWrapper.Connect().ConfigureAwait(false);
         }
 
-        private async Task InitializeCustomServices(List<IService> services)
+        private async Task<ServiceProvider> InitializeCustomServices(List<IService> services)
         {
+            ServiceCollection collection = new ServiceCollection();
             foreach (var service in services)
             {
                 await service.InitializeService();
+                collection.AddSingleton(service.GetType(), service);
             }
+            return collection.BuildServiceProvider();
         }
 
         private DiscordConfiguration ConvertDiscordConfig(DiscordConfig config)

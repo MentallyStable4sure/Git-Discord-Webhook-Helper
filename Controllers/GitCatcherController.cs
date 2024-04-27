@@ -43,30 +43,32 @@ namespace MentallyStable.GitHelper.Controllers
             Console.WriteLine(body);
 
             //parse action type if possible (if not parse prefixes) and if its not a comment create a new thread
-            _debugger.Log(response.EventType, new DebugOptions(this, "[webhook-raw]"));
+            _debugger.Log(response.ObjectKind, new DebugOptions(this, "[webhook-raw]"));
+            string[] lookupKeys = response.ObjectKind.ToLookupKeys(response);
 
             //catch all implementation if we've set a channel id (CatchAllAPI_ID) in discordconfig
-            await CatchAll(PrettyViewHelper.WrapResponseInEmbed(response));
+            await CatchAll(PrettyViewHelper.WrapResponseInEmbed(response, response.ObjectKind, lookupKeys));
 
             //parse all out prefixes and see if it even needed to be tracked
             var prefixesFound = _gitResponseParser.ParsePrefixes(response, _broadcastService.GetAllPrefixes());
-            if (prefixesFound.Length <= 0) return "<h4>We have not found any prefixes tracked in your response, if this problem persist check if you have any prefixes you track in configs/discordbroadcasters.json</h4>";
+            if (prefixesFound.Length <= 0) return $"<h4>We have not found any prefixes tracked in your response, if this problem persist check if you have any prefixes you track in configs/{Endpoints.DISCORD_BROADCASTERS_CONFIG}</h4>";
 
             var channelsTracked = _broadcastService.GetChannels(prefixesFound);
-            var threadedMessage = PrettyViewHelper.WrapResponseInEmbed(response);
+            var threadedMessage = PrettyViewHelper.WrapResponseInEmbed(response, response.ObjectKind, lookupKeys);
 
+            string title = lookupKeys.ToTitle();
             foreach (var channel in channelsTracked)
             {
-                if (!_threadWatcher.IsThreadCreated(channel, response.ObjectAttributes.Title))
+                if (!_threadWatcher.IsThreadCreated(channel, lookupKeys)) //response.ObjectAttributes.Title)
                 {
-                    await _threadWatcher.CreateThread(channel, response.ObjectAttributes.Title, threadedMessage);
-                    _debugger.Log($"Created a thread named: '{response.ObjectAttributes.Title}'.", new DebugOptions(this, "[THREAD CREATED]"));
+                    await _threadWatcher.CreateThread(channel, title, threadedMessage);
+                    _debugger.Log($"Created a thread named: '{title}'.", new DebugOptions(this, "[THREAD CREATED]"));
                 }
                 else
                 {
-                    var threadChannel = _threadWatcher.FindThread(channel, response.ObjectAttributes.Title);
+                    var threadChannel = _threadWatcher.FindThread(channel, lookupKeys); //response.ObjectAttributes.Title);
                     if (threadChannel != null) await _threadWatcher.Post(threadChannel, threadedMessage);
-                    else _debugger.Log($"Couldn't find a thread '{response.ObjectAttributes.Title}'.", new DebugOptions(this, "[THREAD NOT FOUND]"));
+                    else _debugger.Log($"Couldn't find a thread '{title}'.", new DebugOptions(this, "[THREAD NOT FOUND]"));
                 }
             }
 

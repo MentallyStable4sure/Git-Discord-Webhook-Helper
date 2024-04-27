@@ -6,7 +6,7 @@ namespace MentallyStable.GitHelper.Services.Discord
     public class NewsService : IService
     {
         public const string FULL_NEWS_IMAGE = "https://bunbun.cloud/admin/funkymonke/img/news.png";
-        public const string SHORT_NEWS_IMAGE = "https://bunbun.cloud/admin/funkymonke/img/news-short.png";
+        public const string SHORT_NEWS_IMAGE = "https://bunbun.cloud/admin/funkymonke/img/_drip_monkey_banner.gif";
 
         public static DiscordInteractionResponseBuilder CreateBuilderNews(
             string title, string description, string url = null, string imageUrl = FULL_NEWS_IMAGE, DiscordEmbedBuilder.EmbedAuthor author = null)

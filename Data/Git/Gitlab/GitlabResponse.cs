@@ -15,6 +15,8 @@ namespace MentallyStable.GitHelper.Data.Git.Gitlab
 
         [JsonProperty("object_attributes")]
         public GitlabAttributes ObjectAttributes = new GitlabAttributes();
+        [JsonProperty("merge_request")]
+        public GitlabMergeRequest MergeRequest = new GitlabMergeRequest();
         public GitlabRepository Reposity = new GitlabRepository();
 
     }

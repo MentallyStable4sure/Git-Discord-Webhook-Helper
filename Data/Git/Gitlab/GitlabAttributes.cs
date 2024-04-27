@@ -12,6 +12,9 @@ namespace MentallyStable.GitHelper.Data.Git.Gitlab
         [JsonProperty("created_at")]
         public string CreatedAt = string.Empty;
         public string Description = string.Empty;
+        public string Note = string.Empty;
+        [JsonProperty("noteable_type")]
+        public string NoteableType = string.Empty;
 
         public int Id = 0;
         public int Iid = 0;
@@ -21,6 +24,8 @@ namespace MentallyStable.GitHelper.Data.Git.Gitlab
         [JsonProperty("last_edited_by_id")]
         public int? LastEditedById = 0;
 
+        [JsonProperty("line_code")]
+        public string LineCode = string.Empty;
         [JsonProperty("merge_commit_sha")]
         public string MergeCommitSha = string.Empty;
         [JsonProperty("merge_error")]
@@ -48,6 +53,7 @@ namespace MentallyStable.GitHelper.Data.Git.Gitlab
         public GitlabRepository Source = new GitlabRepository();
         public GitlabRepository Target = new GitlabRepository();
 
+        public GitlabCommit Commit = new GitlabCommit();
         [JsonProperty("last_commit")]
         public GitlabCommit LastCommit = new GitlabCommit();
 

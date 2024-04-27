@@ -14,7 +14,7 @@ namespace MentallyStable.GitHelper.Services.Parsers.Implementation
             {
                 response.ObjectAttributes.Title,
                 response.ObjectAttributes.SourceBranch,
-                response.EventType
+                response.ObjectKind
             };
 
             foreach (string stringToLookup in listToLookup)

@@ -30,14 +30,18 @@
             return File.OpenRead(fullPath);
         }
 
-        public static void CreateConfig(string rawJson)
+        public static void CreateConfig(string rawJson, string filename = "rawConfig.json")
         {
             var current = Directory.GetCurrentDirectory();
             var fullPath = Path.Combine(current, CONFIGS_FOLDER);
 
             if (!Directory.Exists(fullPath)) Directory.CreateDirectory(fullPath);
-            Console.WriteLine(fullPath);
-            File.WriteAllText(Path.Combine(fullPath, "rawConfig.json"), rawJson);
+
+            Console.ForegroundColor = ConsoleColor.DarkMagenta;
+            Console.WriteLine($"Updating path: {fullPath}.....");
+            Console.ResetColor();
+
+            File.WriteAllText(Path.Combine(fullPath, filename), rawJson);
         }
     }
 }

@@ -22,32 +22,32 @@ namespace MentallyStable.GitHelper.Services.Discord
             }
         }
 
-        public bool IsThreadCreated(DiscordChannel discordChannel, string title)
+        public bool IsThreadCreated(DiscordChannel discordChannel, string[] lookupKeys)
         {
             foreach (var thread in discordChannel.Threads)
             {
-                if (thread.Name != title) continue;
+                if (!lookupKeys.Contains(thread.Name)) continue;
                 return true;
             }
 
             return false;
         }
 
-        public bool IsThreadCreated(List<DiscordChannel> discordChannels, string title)
+        public bool IsThreadCreated(List<DiscordChannel> discordChannels, string[] lookupKeys)
         {
             foreach (var channel in discordChannels)
             {
-                if(IsThreadCreated(channel, title)) return true;
+                if(IsThreadCreated(channel, lookupKeys)) return true;
             }
 
             return false;
         }
 
-        public DiscordThreadChannel FindThread(DiscordChannel channel, string title)
+        public DiscordThreadChannel FindThread(DiscordChannel channel, string[] lookupKeys)
         {
             foreach (var thread in channel.Threads)
             {
-                if (thread.Name == title) return thread;
+                if (lookupKeys.Contains(thread.Name)) return thread;
             }
 
             return null;

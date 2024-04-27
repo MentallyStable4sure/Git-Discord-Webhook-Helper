@@ -30,8 +30,8 @@ namespace MentallyStable.GitHelper.Registrators
         {
             var dbConfig = await LoadConfig("dbconfig.json");
             var svConfig = await LoadConfig("serverconfig.json");
-            var dsConfig = await LoadConfig("discordconfig.json");
-            var broadcastersConfig = await LoadConfig("discordbroadcasters.json");
+            var dsConfig = await LoadConfig(Endpoints.DISCORD_CONFIG);
+            var broadcastersConfig = await LoadConfig(Endpoints.DISCORD_BROADCASTERS_CONFIG);
 
             _debugger.TryExecute(() => DatabaseConfig = ConvertConfig<DatabaseConfig>(dbConfig), new DebugOptions(this, typeof(DatabaseConfig).Name));
             _debugger.TryExecute(() => ServerConfig = ConvertConfig<ServerConfig>(svConfig), new DebugOptions(this, typeof(ServerConfig).Name));
