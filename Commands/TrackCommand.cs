@@ -11,6 +11,12 @@ namespace MentallyStable.GitHelper.Commands
         [SlashCommand("track", "adds this channel (which u typing in rn) to a tracking ones with prefixes provided")]
         public async Task TrackChannel(InteractionContext ctx, [Option("Prefixes", "prefixes to keep track by this channel ('all' if null [NOT RECOMMENDED])")] string prefix1, [Option("Prefix2", "More prefixes to track (optional)")] string prefix2 = null, [Option("Prefix3", "More prefixes to track (optional)")]  string prefix3 = null)
         {
+            if (TrackingService.IsChannelTracked(ctx.Channel.Id))
+            {
+                await ctx.CreateResponseAsync($"> {ctx.Channel.Mention} is already tracked, to add more prefixes use track-addprefix");
+                return;
+            }
+
             List<string> prefixes = new List<string> { prefix1, prefix2, prefix3 };
             List<string> actualPrefixes = new List<string>();
             foreach (var prefix in prefixes)
@@ -33,6 +39,12 @@ namespace MentallyStable.GitHelper.Commands
         [SlashCommand("untrack", "removes this channel (which u typing in rn) from a tracking ones by git webhooks (with all prefixes)")]
         public async Task UntrackChannel(InteractionContext ctx)
         {
+            if (!TrackingService.IsChannelTracked(ctx.Channel.Id))
+            {
+                await ctx.CreateResponseAsync($"> {ctx.Channel.Mention} was not tracked before, no changes made");
+                return;
+            }
+
             var data = BroadcastDataService.GetChannelData(ctx.Channel.Id);
 
             string message = string.Empty;
