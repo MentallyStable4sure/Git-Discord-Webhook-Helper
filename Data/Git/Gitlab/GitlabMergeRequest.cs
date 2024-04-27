@@ -16,5 +16,7 @@ namespace MentallyStable.GitHelper.Data.Git.Gitlab
         [JsonProperty("merge_status")]
         public string MergeStatus = string.Empty;
         public string Url = string.Empty;
+        [JsonProperty("last_commit")]
+        public GitlabCommit LastCommit = new GitlabCommit();
     }
 }

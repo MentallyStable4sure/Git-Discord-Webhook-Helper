@@ -35,8 +35,15 @@ namespace MentallyStable.GitHelper.Helpers
 
         private static string GetDescriptionBasedOnDescriptor(string descriptor, GitlabResponse response)
         {
-            if (descriptor == Endpoints.GITLAB_COMMENT_ATTRIBUTE) return response.ObjectAttributes.Note;
-            else return response.ObjectAttributes.Description;
+            string author = response.ObjectAttributes.LastCommit.Author.Name;
+            if (string.IsNullOrEmpty(author)) author = response.MergeRequest.LastCommit.Author.Name;
+            if (string.IsNullOrEmpty(author)) author = response.User.Name;
+
+            if (descriptor == Endpoints.GITLAB_COMMENT_ATTRIBUTE)
+            {
+                return $"✨ [{response.Project.PathWithNamespace}] ✨\n__Author:__ ** {author} **\n\n> **{response.User.Name}** says: \n\n`✏️ {response.ObjectAttributes.Note}`";
+            }
+            else return $"✨ [{response.Project.PathWithNamespace}] ✨\n__Author:__ ** {author} **\n\n> __Target:__ ** {response.ObjectAttributes.TargetBranch} **\n> __Source:__ ** {response.ObjectAttributes.SourceBranch} **\n\n`✏️ {response.ObjectAttributes.Description}`";
         }
     }
 }
