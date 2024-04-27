@@ -60,5 +60,6 @@ namespace MentallyStable.GitHelper.Data.Git.Gitlab
         [JsonProperty("work_in_progress")]
         public bool WorkInProgress = true;
         public string State = string.Empty;
+        public string Action = string.Empty;
     }
 }
