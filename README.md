@@ -8,9 +8,19 @@
   <summary>✏️ COMMANDS AVALIABLE ATM: ✏️</summary>
 
   ```
-  /help
-  /news [TITLE] [DESCRIPTION] [URL (OPTIONAL)] - Posts an embedded message with title, description, and author.
-  /news-short [DESCRIPTION] - Posts short version of embedded message as '/news' but no author and title.
+  /help - all commands list.
+  /allprefixes - all possible pre-generated prefixes (you can, and i suggest to add yours too)
+
+  /news [TITLE] [DESCRIPTION] [URL (optional)] - Posts an embedded with title, description, author.
+  /news-short [DESCRIPTION] - Posts short version of embedded as '/news' but no author and title.
+
+  /track [PREFIX] [PREFIX2 (optional)] - Starts to track channel for given prefixes.
+  /untrack - Removes tracking and deletes all prefixes from current channel.
+
+  /addprefix [PREFIX] - adds a prefix to track in current channel.
+  /removeprefix [PREFIX] - removes prefix from tracking in current channel.
+
+  /current-channel-prefixes - see the list of prefixes that this channel tracks.
   ```
   </details>
 
@@ -21,8 +31,13 @@
   <summary>💬 I MIGHT ADD: 💬</summary>
 
   ```
-  /track [CHANNEL_ID] - to add channel to discordbroadcasters.json
-  /untrack [CHANNEL_ID] - to remove channel from discordbroadcasters.json
+  /pipeline [pipeline_id] - to add your build pipelines to track
+  /build [pipeline_id] - to execute building pipeline from discord
+
+
+  /addprefix [wiki_page, issues, pipeline] - more predifined settings
+
+  /is-able-to-merge - type in thread to see if PR has conflicts
   ```
   </details>
   
