@@ -1,7 +1,7 @@
 ﻿
 namespace MentallyStable.GitHelper.Services.Parsers
 {
-    public interface IResponseParser<TResponse, TActionTypes>
+    public interface IResponseParser<TResponse>
     {
         /// <summary>
         /// Parses prefixes contained in response and returns contained prefixes
@@ -10,13 +10,5 @@ namespace MentallyStable.GitHelper.Services.Parsers
         /// <param name="prefixes">All prefixes to parse</param>
         /// <returns>Prefixes found in this response</returns>
         public string[] ParsePrefixes(TResponse response, string[] prefixes);
-
-        /// <summary>
-        /// Parses prefixes contained in response and returns contained prefixes
-        /// </summary>
-        /// <param name="response">Response to parse</param>
-        /// <param name="types">All types to parse</param>
-        /// <returns>Types found in this response</returns>
-        public TActionTypes[] ParseTypes(TResponse response, TActionTypes[] types);
     }
 }

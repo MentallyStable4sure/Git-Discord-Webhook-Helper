@@ -1,7 +1,6 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
 using MentallyStable.GitHelper.Helpers;
-using MentallyStable.GitHelper.Data.Git;
 using MentallyStable.GitHelper.Data.Discord;
 using MentallyStable.GitHelper.Registrators;
 using MentallyStable.GitHelper.Data.Development;
@@ -52,34 +51,24 @@ namespace MentallyStable.GitHelper.Services.Discord
             return channels;
         }
 
-        public List<DiscordChannel> GetChannels(GitActionType[] actions)
+        public string[] GetAllPrefixes()
         {
-            var channels = new List<DiscordChannel>();
+            List<string> prefixesCollected = new List<string>();
+
             foreach (var data in _broadcastData.Values)
             {
-                foreach (var action in data.ActionsToTrack)
+                foreach (var prefix in data.PrefixesToTrack)
                 {
-                    if (!actions.Any(element => element == action)) continue;
-
-                    var duplicate = channels.FirstOrDefault(channelToSeek => data.ChannelID == channelToSeek.Id);
-                    if (duplicate != null) continue;
-
-                    channels.Add(data.DiscodChannelReference);
+                    if(prefixesCollected.Contains(prefix)) continue;
+                    prefixesCollected.Add(prefix);
                 }
             }
 
-            return channels;
+            return prefixesCollected.ToArray();
         }
 
-        public async Task BroadcastMessageAccordingToPrefix(string[] prefixes, string message)
-        {
-            await GetChannels(prefixes).BroadcastToAll(message);
-        }
-
-        public async Task BroadcastMessageAccordingToType(GitActionType[] types, string message)
-        {
-            await GetChannels(types).BroadcastToAll(message);
-        }
+        public async Task BroadcastMessageAccordingToPrefix(string[] prefixes, string message) => await GetChannels(prefixes).BroadcastToAll(message);
+        public async Task BroadcastMessageAccordingToPrefix(string[] prefixes, DiscordMessageBuilder message) => await GetChannels(prefixes).BroadcastToAll(message);
 
         public async Task BroadcastMessageTo(ulong channelID, string message)
         {

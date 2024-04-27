@@ -1,14 +1,13 @@
 using Newtonsoft.Json;
 using DSharpPlus.Entities;
 using Microsoft.AspNetCore.Mvc;
-using MentallyStable.GitHelper.Data.Git;
+using MentallyStable.GitHelper.Helpers;
 using MentallyStable.GitHelper.Data.Database;
 using MentallyStable.GitHelper.Data.Git.Gitlab;
-using MentallyStable.GitHelper.Services.Discord;
-using MentallyStable.GitHelper.Data.Development;
-using MentallyStable.GitHelper.Services.Development;
-using MentallyStable.GitHelper.Helpers;
 using MentallyStable.GitHelper.Services.Parsers;
+using MentallyStable.GitHelper.Data.Development;
+using MentallyStable.GitHelper.Services.Discord;
+using MentallyStable.GitHelper.Services.Development;
 
 namespace MentallyStable.GitHelper.Controllers
 {
@@ -19,16 +18,19 @@ namespace MentallyStable.GitHelper.Controllers
         private readonly IDebugger _debugger;
         private readonly BroadcastDataService _broadcastService;
         private readonly DiscordConfig _discordConfig;
-        private readonly IResponseParser<GitlabResponse, GitActionType> _gitResponseParser;
+        private readonly IResponseParser<GitlabResponse> _gitResponseParser;
+        private readonly IThreadWatcher _threadWatcher;
 
         public GitCatcherController(IDebugger logger,
             BroadcastDataService broadcastService, DiscordConfig config,
-            IResponseParser<GitlabResponse, GitActionType> responseParser) : base()
+            IResponseParser<GitlabResponse> responseParser,
+            IThreadWatcher threadWatcher) : base()
         {
             _debugger = logger;
             _broadcastService = broadcastService;
             _discordConfig = config;
             _gitResponseParser = responseParser;
+            _threadWatcher = threadWatcher;
         }
 
         [HttpPost("ping")]
@@ -38,28 +40,37 @@ namespace MentallyStable.GitHelper.Controllers
         public async Task<string> Catch([FromBody] object body)
         {
             var response = JsonConvert.DeserializeObject<GitlabResponse>(body.ToString());
+            Console.WriteLine(body);
 
-            //STEP 1: parse action type:
-            response.ActionEventType = response.EventType.ToGitAction();
-            _debugger.Log(response.ActionEventType.ToString(), new DebugOptions(this, "[webhook-raw]"));
+            //parse action type if possible (if not parse prefixes) and if its not a comment create a new thread
+            _debugger.Log(response.EventType, new DebugOptions(this, "[webhook-raw]"));
 
-            //STEP 2: parse prefixes:
-            _gitResponseParser.ParsePrefixes(response, )
+            //catch all implementation if we've set a channel id (CatchAllAPI_ID) in discordconfig
+            await CatchAll(PrettyViewHelper.WrapResponseInEmbed(response));
 
-            var message = PrettyViewService.WrapResponseInEmbed(response);
-            await CatchAll(message);
+            //parse all out prefixes and see if it even needed to be tracked
+            var prefixesFound = _gitResponseParser.ParsePrefixes(response, _broadcastService.GetAllPrefixes());
+            if (prefixesFound.Length <= 0) return "<h4>We have not found any prefixes tracked in your response, if this problem persist check if you have any prefixes you track in configs/discordbroadcasters.json</h4>";
+
+            var channelsTracked = _broadcastService.GetChannels(prefixesFound);
+            var threadedMessage = PrettyViewHelper.WrapResponseInEmbed(response);
+
+            foreach (var channel in channelsTracked)
+            {
+                if (!_threadWatcher.IsThreadCreated(channel, response.ObjectAttributes.Title))
+                {
+                    await _threadWatcher.CreateThread(channel, response.ObjectAttributes.Title, threadedMessage);
+                    _debugger.Log($"Created a thread named: '{response.ObjectAttributes.Title}'.", new DebugOptions(this, "[THREAD CREATED]"));
+                }
+                else
+                {
+                    var threadChannel = _threadWatcher.FindThread(channel, response.ObjectAttributes.Title);
+                    if (threadChannel != null) await _threadWatcher.Post(threadChannel, threadedMessage);
+                    else _debugger.Log($"Couldn't find a thread '{response.ObjectAttributes.Title}'.", new DebugOptions(this, "[THREAD NOT FOUND]"));
+                }
+            }
 
             return "Data sent to a discord model successfully";
-            //TODO: parse rawJson and check name of commit/pr, set it to prefix
-            string[] prefixes = new string[0];
-            //TODO: also set git actions according to what request it is, PR/Comment/Push/Merge/Close/etc.
-            GitActionType[] actions = new GitActionType[0];
-
-            //TODO: finally get channels to where we can post it
-            //var channels = _broadcastService.GetChannelsByTypeAndPrefix();
-            //_broadcastService.PostToChannels(channels);
-
-            //return Ok($"Data sent to a discord model:\n {rawJson}");
         }
 
         private async Task CatchAll(string response)

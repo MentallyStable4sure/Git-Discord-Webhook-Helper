@@ -1,20 +1,10 @@
 ﻿using DSharpPlus.Entities;
-using MentallyStable.GitHelper.Helpers;
 using MentallyStable.GitHelper.Data.Git.Gitlab;
 
-namespace MentallyStable.GitHelper.Services.Discord
+namespace MentallyStable.GitHelper.Helpers
 {
-    public class PrettyViewService : IService
+    public class PrettyViewHelper
     {
-        public PrettyViewService()
-        {
-
-        }
-
-        public async Task InitializeService()
-        {
-            
-        }
 
         public static DiscordMessageBuilder WrapResponseInEmbed(GitlabResponse response)
         {
@@ -26,7 +16,7 @@ namespace MentallyStable.GitHelper.Services.Discord
                         Name = response.User.Username,
                         IconUrl = response.User.AvatarUrl
                     },
-                    ImageUrl = response.ActionEventType.ToImage(),
+                    ImageUrl = response.EventType.ToImage(),
                     Color = DiscordColor.Black,
                     Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail()
                     {

@@ -1,9 +1,12 @@
 ﻿using DSharpPlus;
 using MentallyStable.GitHelper.Services;
 using MentallyStable.GitHelper.Data.Database;
+using MentallyStable.GitHelper.Data.Development;
 using MentallyStable.GitHelper.Services.Discord;
 using MentallyStable.GitHelper.Services.Development;
 using MentallyStable.GitHelper.Services.Discord.Bot;
+using System.Net;
+using System;
 
 namespace MentallyStable.GitHelper.Registrators
 {
@@ -29,18 +32,16 @@ namespace MentallyStable.GitHelper.Registrators
             _services = new List<IService>()
             {
                 _broadcastDataService,
-                new NewsService(),
-                new PrettyViewService()
             };
         }
 
         public async Task Register(WebApplicationBuilder builder)
         {
-            await RegisterCustomServices(_services);
+            await InitializeCustomServices(_services);
 
             DiscordBotWrapper discordBot = null;
 
-            _debugger.TryExecute(() => discordBot = new DiscordBotWrapper(_discordClient, _discordConfig));
+            _debugger.TryExecute(() => discordBot = new DiscordBotWrapper(_discordClient, _discordConfig), new DebugOptions(this, typeof(DiscordBotWrapper).Name));
 
             builder.Services.AddSingleton<DiscordBotWrapper>(discordBot);
             builder.Services.AddSingleton<BroadcastDataService>(_broadcastDataService);
@@ -48,9 +49,21 @@ namespace MentallyStable.GitHelper.Registrators
             StartBot(discordBot);
         }
 
-        private void StartBot(DiscordBotWrapper discordWrapper) => discordWrapper.Connect().ConfigureAwait(false);
+        private void StartBot(DiscordBotWrapper discordWrapper)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("Prefixes tracked: ");
+            foreach (var item in _broadcastDataService.GetAllPrefixes())
+            {
+                Console.Write($"{item}; ");
+            }
+            Console.WriteLine("\n\n");
+            Console.ResetColor();
 
-        private async Task RegisterCustomServices(List<IService> services)
+            discordWrapper.Connect().ConfigureAwait(false);
+        }
+
+        private async Task InitializeCustomServices(List<IService> services)
         {
             foreach (var service in services)
             {

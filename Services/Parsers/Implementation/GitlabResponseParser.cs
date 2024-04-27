@@ -1,11 +1,9 @@
 ﻿
-using MentallyStable.GitHelper.Helpers;
-using MentallyStable.GitHelper.Data.Git;
 using MentallyStable.GitHelper.Data.Git.Gitlab;
 
 namespace MentallyStable.GitHelper.Services.Parsers.Implementation
 {
-    public class GitlabResponseParser : IService, IResponseParser<GitlabResponse, GitActionType>
+    public class GitlabResponseParser : IService, IResponseParser<GitlabResponse>
     {
         public Task InitializeService() => Task.CompletedTask;
 
@@ -15,7 +13,8 @@ namespace MentallyStable.GitHelper.Services.Parsers.Implementation
             string[] listToLookup =
             {
                 response.ObjectAttributes.Title,
-                response.ObjectAttributes.SourceBranch
+                response.ObjectAttributes.SourceBranch,
+                response.EventType
             };
 
             foreach (string stringToLookup in listToLookup)
@@ -28,31 +27,6 @@ namespace MentallyStable.GitHelper.Services.Parsers.Implementation
             }
 
             return prefixesFound.ToArray();
-        }
-
-        public GitActionType[] ParseTypes(GitlabResponse response, GitActionType[] types)
-        {
-            if (types.Contains(GitActionType.All)) return new GitActionType[1] { GitActionType.All };
-
-            List<GitActionType> typesFound = new List<GitActionType>();
-            string[] listToLookup =
-            {
-                response.ObjectAttributes.State,
-                response.ObjectAttributes.WorkInProgress ? "WIP" : string.Empty,
-                response.EventType
-            };
-
-            foreach (string stringToLookup in listToLookup)
-            {
-                foreach (var type in types)
-                {
-                    if (!stringToLookup.ToLower().Contains(type.ToParserValue())) continue;
-                    if (typesFound.Contains(type)) continue;
-                    typesFound.Add(type);
-                }
-            }
-
-            return typesFound.ToArray();
         }
     }
 }

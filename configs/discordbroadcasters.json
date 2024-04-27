@@ -1,2 +1,10 @@
 {
+    "1044204808179032086": {
+      "ChannelID": 5435345345345345,
+      "PrefixesToTrack": [
+        "feature",
+        "merge_request"
+      ]
+
+    }
 }

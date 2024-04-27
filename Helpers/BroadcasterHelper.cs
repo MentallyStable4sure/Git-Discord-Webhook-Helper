@@ -2,16 +2,15 @@
 using Newtonsoft.Json;
 using DSharpPlus.Entities;
 using MentallyStable.GitHelper.Data;
-using MentallyStable.GitHelper.Data.Git;
 using MentallyStable.GitHelper.Data.Discord;
 
 namespace MentallyStable.GitHelper.Helpers
 {
     public static class BroadcasterHelper
     {
-        public static async Task BroadcastToAll(this DiscordChannel[] discordChannels, string message)
+        public static async Task BroadcastToAll(this List<DiscordChannel> discordChannels, DiscordMessageBuilder message)
         {
-            if (discordChannels == null || discordChannels.Length <= 0) return;
+            if (discordChannels == null || discordChannels.Count <= 0) return;
 
             foreach (var channelToBroadcast in discordChannels)
             {
@@ -45,8 +44,6 @@ namespace MentallyStable.GitHelper.Helpers
 
         public static ulong GetRandomDummyChannelID() => (ulong)Random.Shared.NextInt64(1000000000000, 99999999999999);
 
-        public static GitActionType GetRandomDummyGitActionType() => (GitActionType)Random.Shared.Next(0, Enum.GetValues(typeof(GitActionType)).Length);
-
         public static BroadcastData GetRandomDummyBroadcastData() => GetRandomDummyBroadcastData(GetRandomDummyChannelID());
 
         public static BroadcastData GetRandomDummyBroadcastData(ulong channelID)
@@ -54,7 +51,6 @@ namespace MentallyStable.GitHelper.Helpers
             return new BroadcastData()
             {
                 ChannelID = channelID,
-                ActionsToTrack = new GitActionType[1] { GetRandomDummyGitActionType() },
                 PrefixesToTrack = new string[1] { GetRandomDummyGitPrefix() }
             };
         }
