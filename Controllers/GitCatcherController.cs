@@ -43,7 +43,7 @@ namespace MentallyStable.GitHelper.Controllers
             Console.WriteLine(body);
 
             //parse action type if possible (if not parse prefixes) and if its not a comment create a new thread
-            _debugger.Log(response.EventType, new DebugOptions(this, "[webhook-raw]"));
+            _debugger.Log(response.ObjectKind, new DebugOptions(this, "[webhook-raw]"));
 
             //catch all implementation if we've set a channel id (CatchAllAPI_ID) in discordconfig
             await CatchAll(PrettyViewHelper.WrapResponseInEmbed(response));
