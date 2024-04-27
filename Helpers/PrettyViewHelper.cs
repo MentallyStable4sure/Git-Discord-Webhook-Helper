@@ -16,7 +16,7 @@ namespace MentallyStable.GitHelper.Helpers
                         Name = response.User.Username,
                         IconUrl = response.User.AvatarUrl
                     },
-                    ImageUrl = response.EventType.ToImage(),
+                    ImageUrl = response.EventType.ToImage(response),
                     Color = DiscordColor.Black,
                     Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail()
                     {

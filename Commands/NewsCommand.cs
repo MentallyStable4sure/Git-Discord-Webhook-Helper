@@ -1,5 +1,4 @@
-﻿using System;
-using DSharpPlus.Entities;
+﻿using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using MentallyStable.GitHelper.Extensions;
 using MentallyStable.GitHelper.Services.Discord;
@@ -21,8 +20,8 @@ namespace MentallyStable.GitHelper.Commands
             var builder = new DiscordInteractionResponseBuilder()
                 .GetEmbedTemplate(
                 newsTitle, 
-                newsDescription, 
-                "http://93.127.202.154/img/news.png",
+                newsDescription,
+                NewsService.FULL_NEWS_IMAGE,
                 url, author);
             await ctx.CreateResponseAsync(builder);
         }
