@@ -28,8 +28,9 @@ namespace MentallyStable.GitHelper.Registrators
 
             _services = new List<IService>()
             {
+                _broadcastDataService,
                 new NewsService(),
-                _broadcastDataService
+                new PrettyViewService()
             };
         }
 
