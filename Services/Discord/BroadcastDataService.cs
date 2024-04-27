@@ -32,6 +32,8 @@ namespace MentallyStable.GitHelper.Services.Discord
         public DiscordChannel GetChannel(ulong channelID) => _broadcastData[channelID]?.DiscodChannelReference;
         public DiscordChannel GetChannel(BroadcastData data) => GetChannel(data.ChannelID);
 
+        public BroadcastData GetChannelData(ulong channelID) => _broadcastData[channelID];
+
         public List<DiscordChannel> GetChannels(string[] prefixes)
         {
             var channels = new List<DiscordChannel>();
