@@ -41,7 +41,7 @@ namespace MentallyStable.GitHelper.Services.Discord
             {
                 foreach (var prefixInData in data.PrefixesToTrack)
                 {
-                    if (!prefixes.Any(element => element == prefixInData)) continue;
+                    if (!prefixes.Any(element => element == prefixInData) && prefixInData != "all") continue;
 
                     var duplicate = channels.FirstOrDefault(channelToSeek => data.ChannelID == channelToSeek.Id);
                     if (duplicate != null) continue;
