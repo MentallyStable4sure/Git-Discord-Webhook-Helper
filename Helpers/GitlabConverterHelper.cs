@@ -33,6 +33,9 @@ namespace MentallyStable.GitHelper.Helpers
                     {
                         response.ObjectAttributes.Title,
                         response.ObjectAttributes.SourceBranch,
+                        response.MergeRequest.SourceBranch,
+                        response.MergeRequest.Title,
+                        response.ObjectAttributes.Source.Name,
                         response.ObjectAttributes.Note,
                         response.ObjectAttributes.LastCommit.Message
                     };

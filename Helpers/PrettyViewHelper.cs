@@ -1,4 +1,5 @@
 ﻿using DSharpPlus.Entities;
+using MentallyStable.GitHelper.Data.Database;
 using MentallyStable.GitHelper.Data.Git.Gitlab;
 
 namespace MentallyStable.GitHelper.Helpers
@@ -6,7 +7,7 @@ namespace MentallyStable.GitHelper.Helpers
     public class PrettyViewHelper
     {
 
-        public static DiscordMessageBuilder WrapResponseInEmbed(GitlabResponse response)
+        public static DiscordMessageBuilder WrapResponseInEmbed(GitlabResponse response, string descriptor, string[] lookupKeys)
         {
             return new DiscordMessageBuilder()
                 .WithEmbed(new DiscordEmbedBuilder()
@@ -16,6 +17,7 @@ namespace MentallyStable.GitHelper.Helpers
                         Name = response.User.Username,
                         IconUrl = response.User.AvatarUrl
                     },
+
                     ImageUrl = response.ObjectKind.ToImage(response),
                     Color = DiscordColor.Black,
                     Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail()
@@ -24,10 +26,17 @@ namespace MentallyStable.GitHelper.Helpers
                         Width = 25,
                         Height = 25
                     },
-                    Title = response.ObjectAttributes.Title,
-                    Description = response.ObjectAttributes.Description,
+
+                    Title = lookupKeys.ToTitle(), //response.ObjectAttributes.Title,
+                    Description = GetDescriptionBasedOnDescriptor(descriptor, response),
                     Url = response.ObjectAttributes.Url
                 });
+        }
+
+        private static string GetDescriptionBasedOnDescriptor(string descriptor, GitlabResponse response)
+        {
+            if (descriptor == Endpoints.GITLAB_COMMENT_ATTRIBUTE) return response.ObjectAttributes.Note;
+            else return response.ObjectAttributes.Description;
         }
     }
 }
