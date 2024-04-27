@@ -80,6 +80,32 @@ namespace MentallyStable.GitHelper.Services.Discord
             UpdateJson(_broadcastData);
         }
 
+        public void AddPrefix(DiscordChannel channel, string prefix)
+        {
+            if (!IsChannelTracked(channel.Id)) return;
+            if (_broadcastData[channel.Id].PrefixesToTrack.Contains(prefix)) return;
+
+            var list = _broadcastData[channel.Id].PrefixesToTrack.ToList();
+            list.Add(prefix);
+            _broadcastData[channel.Id].PrefixesToTrack = list.ToArray();
+
+            UpdateJson(_broadcastData);
+        }
+
+        public void RemovePrefix(DiscordChannel channel, string prefix)
+        {
+            if (!IsChannelTracked(channel.Id)) return;
+            if (!_broadcastData[channel.Id].PrefixesToTrack.Contains(prefix)) return;
+
+            var list = _broadcastData[channel.Id].PrefixesToTrack.ToList();
+            list.Remove(prefix);
+            _broadcastData[channel.Id].PrefixesToTrack = list.ToArray();
+
+            UpdateJson(_broadcastData);
+        }
+
+        public bool IsChannelTracked(ulong channelId) => _broadcastData.ContainsKey(channelId);
+
         private void UpdateJson(Dictionary<ulong, BroadcastData> broadcastData)
         {
             DataGrabber.CreateConfig(JsonConvert.SerializeObject(broadcastData), Endpoints.DISCORD_BROADCASTERS_CONFIG);
