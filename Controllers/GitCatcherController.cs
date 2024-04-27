@@ -50,7 +50,7 @@ namespace MentallyStable.GitHelper.Controllers
 
             //parse all out prefixes and see if it even needed to be tracked
             var prefixesFound = _gitResponseParser.ParsePrefixes(response, _broadcastService.GetAllPrefixes());
-            if (prefixesFound.Length <= 0) return "<h4>We have not found any prefixes tracked in your response, if this problem persist check if you have any prefixes you track in configs/discordbroadcasters.json</h4>";
+            if (prefixesFound.Length <= 0) return $"<h4>We have not found any prefixes tracked in your response, if this problem persist check if you have any prefixes you track in configs/{Endpoints.DISCORD_BROADCASTERS_CONFIG}</h4>";
 
             var channelsTracked = _broadcastService.GetChannels(prefixesFound);
             var threadedMessage = PrettyViewHelper.WrapResponseInEmbed(response);

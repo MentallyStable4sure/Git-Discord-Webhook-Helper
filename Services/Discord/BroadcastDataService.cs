@@ -2,6 +2,7 @@
 using DSharpPlus.Entities;
 using MentallyStable.GitHelper.Helpers;
 using MentallyStable.GitHelper.Data.Discord;
+using MentallyStable.GitHelper.Data.Database;
 using MentallyStable.GitHelper.Data.Development;
 using MentallyStable.GitHelper.Services.Development;
 
@@ -88,7 +89,7 @@ namespace MentallyStable.GitHelper.Services.Discord
             if (_broadcastData == null || _broadcastData.Count <= 0)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                _debugger.Log("NO CHANNELS TO KEEP TRACK OF FOUND! EDIT YOUR configs/discordbroadcasters.json", new DebugOptions());
+                _debugger.Log($"NO CHANNELS TO KEEP TRACK OF FOUND! EDIT YOUR configs/{Endpoints.DISCORD_BROADCASTERS_CONFIG}", new DebugOptions());
                 Console.ResetColor();
                 return;
             }

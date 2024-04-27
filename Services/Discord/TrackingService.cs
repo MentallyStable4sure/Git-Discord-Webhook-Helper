@@ -1,9 +1,9 @@
-﻿using System.Threading.Channels;
-using DSharpPlus;
+﻿using DSharpPlus;
+using Newtonsoft.Json;
 using DSharpPlus.Entities;
 using MentallyStable.GitHelper.Data;
 using MentallyStable.GitHelper.Data.Discord;
-using Newtonsoft.Json;
+using MentallyStable.GitHelper.Data.Database;
 
 namespace MentallyStable.GitHelper.Services.Discord
 {
@@ -82,7 +82,7 @@ namespace MentallyStable.GitHelper.Services.Discord
 
         private void UpdateJson(Dictionary<ulong, BroadcastData> broadcastData)
         {
-            DataGrabber.CreateConfig(JsonConvert.SerializeObject(broadcastData), "discordbroadcasters.json");
+            DataGrabber.CreateConfig(JsonConvert.SerializeObject(broadcastData), Endpoints.DISCORD_BROADCASTERS_CONFIG);
         }
     }
 }
