@@ -14,8 +14,46 @@ namespace MentallyStable.GitHelper.Helpers
                 case "comment":
                     return GitActionType.Comment;
 
+                case "merged":
+                    return GitActionType.Merged;
+
+                case "closed":
+                    return GitActionType.Closed;
+
+                case "wip":
+                    return GitActionType.WorkInProgress;
+
+                case "":
+                    return GitActionType.None;
+
                 default:
                     return GitActionType.All;
+            }
+        }
+
+        public static string ToParserValue(this GitActionType action)
+        {
+            switch (action)
+            {
+                case GitActionType.MergeRequest:
+                    return "merge_request";
+
+                case GitActionType.Comment:
+                    return "comment";
+
+                case GitActionType.Merged:
+                    return "merged";
+
+                case GitActionType.Closed:
+                    return "closed";
+
+                case GitActionType.WorkInProgress:
+                    return "wip";
+
+                case GitActionType.All:
+                case GitActionType.None:
+                default:
+                    return string.Empty;
             }
         }
 
@@ -38,6 +76,7 @@ namespace MentallyStable.GitHelper.Helpers
                 case GitActionType.Closed:
                     return "https://bunbun.cloud/admin/funkymonke/img/prclosed.png";
 
+                case GitActionType.None:
                 default:
                     return string.Empty;
             }

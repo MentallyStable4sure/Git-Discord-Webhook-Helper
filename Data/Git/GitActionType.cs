@@ -7,6 +7,7 @@
         MergeRequest = 2,
         Comment = 3,
         Merged = 4,
-        Closed = 5
+        Closed = 5,
+        WorkInProgress = 6,
     }
 }

@@ -1,4 +1,8 @@
-﻿using MentallyStable.GitHelper.Services.Development;
+﻿using MentallyStable.GitHelper.Data.Git;
+using MentallyStable.GitHelper.Data.Git.Gitlab;
+using MentallyStable.GitHelper.Services.Parsers;
+using MentallyStable.GitHelper.Services.Development;
+using MentallyStable.GitHelper.Services.Parsers.Implementation;
 
 namespace MentallyStable.GitHelper.Registrators
 {
@@ -6,7 +10,8 @@ namespace MentallyStable.GitHelper.Registrators
     {
         public Task Register(WebApplicationBuilder builder)
         {
-            builder.Services.AddScoped<IDebugger, Debugger>(); //we will change to the UserService on release
+            builder.Services.AddScoped<IDebugger, Debugger>();
+            builder.Services.AddScoped<IResponseParser<GitlabResponse, GitActionType>, GitlabResponseParser>(); //can be changed to any parser
 
             return Task.CompletedTask;
         }

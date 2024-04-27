@@ -8,6 +8,7 @@ using MentallyStable.GitHelper.Services.Discord;
 using MentallyStable.GitHelper.Data.Development;
 using MentallyStable.GitHelper.Services.Development;
 using MentallyStable.GitHelper.Helpers;
+using MentallyStable.GitHelper.Services.Parsers;
 
 namespace MentallyStable.GitHelper.Controllers
 {
@@ -18,13 +19,16 @@ namespace MentallyStable.GitHelper.Controllers
         private readonly IDebugger _debugger;
         private readonly BroadcastDataService _broadcastService;
         private readonly DiscordConfig _discordConfig;
+        private readonly IResponseParser<GitlabResponse, GitActionType> _gitResponseParser;
 
         public GitCatcherController(IDebugger logger,
-            BroadcastDataService broadcastService, DiscordConfig config) : base()
+            BroadcastDataService broadcastService, DiscordConfig config,
+            IResponseParser<GitlabResponse, GitActionType> responseParser) : base()
         {
             _debugger = logger;
             _broadcastService = broadcastService;
             _discordConfig = config;
+            _gitResponseParser = responseParser;
         }
 
         [HttpPost("ping")]
@@ -34,9 +38,13 @@ namespace MentallyStable.GitHelper.Controllers
         public async Task<string> Catch([FromBody] object body)
         {
             var response = JsonConvert.DeserializeObject<GitlabResponse>(body.ToString());
-            response.ActionEventType = response.EventType.ToGitAction();
 
+            //STEP 1: parse action type:
+            response.ActionEventType = response.EventType.ToGitAction();
             _debugger.Log(response.ActionEventType.ToString(), new DebugOptions(this, "[webhook-raw]"));
+
+            //STEP 2: parse prefixes:
+            _gitResponseParser.ParsePrefixes(response, )
 
             var message = PrettyViewService.WrapResponseInEmbed(response);
             await CatchAll(message);
