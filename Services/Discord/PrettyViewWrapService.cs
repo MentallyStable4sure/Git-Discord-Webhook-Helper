@@ -1,28 +1,49 @@
 ﻿using DSharpPlus.Entities;
+using MentallyStable.GitHelper.Helpers;
 using MentallyStable.GitHelper.Data.Database;
 using MentallyStable.GitHelper.Data.Git.Gitlab;
+using DSharpPlus;
 
-namespace MentallyStable.GitHelper.Helpers
+namespace MentallyStable.GitHelper.Services.Discord
 {
-    public class PrettyViewHelper
+    public class PrettyViewWrapService : IService
     {
+        private readonly UserLinkEstablisherService _establisherService;
+        private readonly DiscordClient _client;
 
-        public static DiscordMessageBuilder WrapResponseInEmbed(GitlabResponse response, string descriptor, string[] lookupKeys)
+        public PrettyViewWrapService(UserLinkEstablisherService establisherService,
+            DiscordClient discordClient)
         {
+            _establisherService = establisherService;
+            _client = discordClient;
+        }
+
+        public Task InitializeService() => Task.CompletedTask;
+
+        public async Task<DiscordMessageBuilder> WrapResponseInEmbed(GitlabResponse response, string descriptor, string[] lookupKeys)
+        {
+            string[] identifiers = new string[3]
+                        {
+                            response.User.Username,
+                            response.User.Email,
+                            response.User.Name
+                        };
+            var avatar = await CheckAvatarBasedOnLink(response, identifiers);
+
             return new DiscordMessageBuilder()
                 .WithEmbed(new DiscordEmbedBuilder()
                 {
                     Author = new DiscordEmbedBuilder.EmbedAuthor()
                     {
                         Name = response.User.Username,
-                        IconUrl = response.User.AvatarUrl
+                        IconUrl = avatar
                     },
 
                     ImageUrl = response.ObjectKind.ToImage(response),
                     Color = DiscordColor.Black,
                     Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail()
                     {
-                        Url = response.User.AvatarUrl,
+                        Url = avatar,
                         Width = 25,
                         Height = 25
                     },
@@ -31,6 +52,17 @@ namespace MentallyStable.GitHelper.Helpers
                     Description = GetDescriptionBasedOnDescriptor(descriptor, response),
                     Url = response.ObjectAttributes.Url
                 });
+        }
+
+        private async Task<string> CheckAvatarBasedOnLink(GitlabResponse response, string[] identifiers)
+        {
+            var connection = _establisherService.GetConnection(identifiers);
+            if (connection == null) return response.User.AvatarUrl;
+            else
+            {
+                var user = await _client.GetUserAsync(connection.DiscordSnowflakeId);
+                return user.AvatarUrl;
+            }
         }
 
         private static string GetDescriptionBasedOnDescriptor(string descriptor, GitlabResponse response)

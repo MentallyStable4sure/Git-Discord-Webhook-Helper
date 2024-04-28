@@ -20,17 +20,20 @@ namespace MentallyStable.GitHelper.Controllers
         private readonly DiscordConfig _discordConfig;
         private readonly IResponseParser<GitlabResponse> _gitResponseParser;
         private readonly IThreadWatcher _threadWatcher;
+        private readonly PrettyViewWrapService _PrettyViewWrapService;
 
         public GitCatcherController(IDebugger logger,
             BroadcastDataService broadcastService, DiscordConfig config,
             IResponseParser<GitlabResponse> responseParser,
-            IThreadWatcher threadWatcher) : base()
+            IThreadWatcher threadWatcher,
+            PrettyViewWrapService prettyViewWrapService) : base()
         {
             _debugger = logger;
             _broadcastService = broadcastService;
             _discordConfig = config;
             _gitResponseParser = responseParser;
             _threadWatcher = threadWatcher;
+            _PrettyViewWrapService = prettyViewWrapService;
         }
 
         [HttpPost("ping")]
@@ -47,14 +50,14 @@ namespace MentallyStable.GitHelper.Controllers
             string[] lookupKeys = response.ObjectKind.ToLookupKeys(response);
 
             //catch all implementation if we've set a channel id (CatchAllAPI_ID) in discordconfig
-            await CatchAll(PrettyViewHelper.WrapResponseInEmbed(response, response.ObjectKind, lookupKeys));
+            await CatchAll(await _PrettyViewWrapService.WrapResponseInEmbed(response, response.ObjectKind, lookupKeys));
 
             //parse all out prefixes and see if it even needed to be tracked
             var prefixesFound = _gitResponseParser.ParsePrefixes(response, _broadcastService.GetAllPrefixes());
             if (prefixesFound.Length <= 0) return $"<h4>We have not found any prefixes tracked in your response, if this problem persist check if you have any prefixes you track in configs/{Endpoints.DISCORD_BROADCASTERS_CONFIG}</h4>";
 
             var channelsTracked = _broadcastService.GetChannels(prefixesFound);
-            var threadedMessage = PrettyViewHelper.WrapResponseInEmbed(response, response.ObjectKind, lookupKeys);
+            var threadedMessage = await _PrettyViewWrapService.WrapResponseInEmbed(response, response.ObjectKind, lookupKeys);
 
             string title = lookupKeys.ToTitle();
             foreach (var channel in channelsTracked)
