@@ -5,6 +5,7 @@ using MentallyStable.GitHelper.Data.Development;
 using MentallyStable.GitHelper.Services.Discord;
 using MentallyStable.GitHelper.Services.Development;
 using MentallyStable.GitHelper.Services.Discord.Bot;
+using MentallyStable.GitHelper.Services.Parsers.Implementation;
 
 namespace MentallyStable.GitHelper.Registrators
 {
@@ -31,7 +32,7 @@ namespace MentallyStable.GitHelper.Registrators
             _broadcastDataService = new BroadcastDataService(configs.BroadcastData, _discordClient);
             _trackingService = new TrackingService(_discordClient, configs.BroadcastData);
             _userLinkEstablisherService = new UserLinkEstablisherService(configs.LinkData);
-            _prettyViewWrapService = new PrettyViewWrapService(_userLinkEstablisherService, _discordClient);
+            _prettyViewWrapService = new PrettyViewWrapService(_userLinkEstablisherService, _discordClient, new GitlabResponseParser());
 
 
             _services = new List<IService>()

@@ -37,6 +37,18 @@ namespace MentallyStable.GitHelper.Services.Discord
             return null;
         }
 
+        public GitToDiscordLinkData GetConnectionStrict(string identifier)
+        {
+            foreach (var link in _establishedConnections)
+            {
+                if (link.DiscordSnowflakeId <= 0) continue;
+                if (identifier != link.GitUniqueIdentifier) continue;
+                return link;
+            }
+
+            return null;
+        }
+
         public void LinkAccount(string gitIdentifier, ulong userId)
         {
             var alreadyEstablishedLink = GetConnection(userId);

@@ -3,6 +3,7 @@ using MentallyStable.GitHelper.Helpers;
 using MentallyStable.GitHelper.Data.Database;
 using MentallyStable.GitHelper.Data.Git.Gitlab;
 using DSharpPlus;
+using MentallyStable.GitHelper.Services.Parsers;
 
 namespace MentallyStable.GitHelper.Services.Discord
 {
@@ -10,12 +11,14 @@ namespace MentallyStable.GitHelper.Services.Discord
     {
         private readonly UserLinkEstablisherService _establisherService;
         private readonly DiscordClient _client;
+        private readonly IResponseParser<GitlabResponse> _parser;
 
         public PrettyViewWrapService(UserLinkEstablisherService establisherService,
-            DiscordClient discordClient)
+            DiscordClient discordClient, IResponseParser<GitlabResponse> parser)
         {
             _establisherService = establisherService;
             _client = discordClient;
+            _parser = parser;
         }
 
         public Task InitializeService() => Task.CompletedTask;
@@ -28,7 +31,9 @@ namespace MentallyStable.GitHelper.Services.Discord
                             response.User.Email,
                             response.User.Name
                         };
-            var avatar = await CheckAvatarBasedOnLink(response, identifiers);
+            string avatar = await CheckAvatarBasedOnLink(response, identifiers);
+            string description = GetDescriptionBasedOnDescriptor(descriptor, response);
+            description = await _parser.ParseLinks(_client, description, _establisherService);
 
             return new DiscordMessageBuilder()
                 .WithEmbed(new DiscordEmbedBuilder()
@@ -49,7 +54,7 @@ namespace MentallyStable.GitHelper.Services.Discord
                     },
 
                     Title = lookupKeys.ToTitle(), //response.ObjectAttributes.Title,
-                    Description = GetDescriptionBasedOnDescriptor(descriptor, response),
+                    Description = description,
                     Url = response.ObjectAttributes.Url
                 });
         }
@@ -75,7 +80,7 @@ namespace MentallyStable.GitHelper.Services.Discord
             {
                 return $"✨ [{response.Project.PathWithNamespace}] ✨\n__Author:__ ** {author} **\n\n> **{response.User.Name}** commented: \n\n`✏️ {response.ObjectAttributes.Note}`";
             }
-            else return $"✨ [{response.Project.PathWithNamespace}] ✨\n__Author:__ ** {author} **\n\n> __Target:__ ** {response.ObjectAttributes.TargetBranch} **\n> __Source:__ ** {response.ObjectAttributes.SourceBranch} **\n\n`✏️ {response.ObjectAttributes.Description}`";
+            else return $"✨ [{response.Project.PathWithNamespace}] ✨\n__Author:__ ** {author} **\n\n> __Target:__ ** {response.ObjectAttributes.TargetBranch} **\n> __Source:__ ** {response.ObjectAttributes.SourceBranch} **\n\n`✏ {response.ObjectAttributes.Description}`";
         }
     }
 }

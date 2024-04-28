@@ -12,8 +12,8 @@ namespace MentallyStable.GitHelper.Commands
 
         public const string DM_PRIVATE_GIF = "https://bunbun.cloud/admin/funkymonke/img/dm_orangutang.gif";
 
-        [SlashCommand("link", "links your git with your discord profile (for notification/avatar-thumbnails/etc.)")]
-        public async Task LinkAccount(InteractionContext ctx, [Option("Identifier", "You can connect either ur username or email, type whatever u want")] string gitIdentifier)
+        [SlashCommand("link", "links your git username with your discord profile (for notification/avatar-thumbnails/etc.)")]
+        public async Task LinkAccount(InteractionContext ctx, [Option("Identifier", "Supports: username (j.bieber), you can type email or name (Justin Bieber) but notify will not work")] string gitIdentifier)
         {
             if (LinkEstablisherService.GetConnection(ctx.User.Id) != null)
             {

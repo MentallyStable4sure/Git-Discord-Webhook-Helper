@@ -1,5 +1,7 @@
 ﻿
+using DSharpPlus;
 using MentallyStable.GitHelper.Data.Git.Gitlab;
+using MentallyStable.GitHelper.Services.Discord;
 
 namespace MentallyStable.GitHelper.Services.Parsers.Implementation
 {
@@ -27,6 +29,28 @@ namespace MentallyStable.GitHelper.Services.Parsers.Implementation
             }
 
             return prefixesFound.ToArray();
+        }
+
+        public async Task<string> ParseLinks(DiscordClient client, string description, UserLinkEstablisherService establisher)
+        {
+            if (!description.Contains('@')) return description;
+
+            string[] divided = description.Split(' ', '@');
+
+            for (int i = 0; i < divided.Length; i++)
+            {
+                var link = establisher.GetConnectionStrict(divided[i]);
+                if (link == null) continue;
+                var user = await client.GetUserAsync(link.DiscordSnowflakeId);
+                divided[i] = $"`{user.Mention}`";
+            }
+
+            description = string.Empty;
+            foreach (var word in divided)
+            {
+                description += $"{word} ";
+            }
+            return description;
         }
     }
 }
