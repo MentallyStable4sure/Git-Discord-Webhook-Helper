@@ -74,8 +74,9 @@ namespace MentallyStable.GitHelper.Controllers
                     var threadChannel = _threadWatcher.FindThread(channel, loweredLookupKeys); //response.ObjectAttributes.Title);
                     if (threadChannel != null)
                     {
+                        var state = response.ObjectAttributes.State;
                         await _threadWatcher.Post(threadChannel, threadedMessage);
-                        if (response.ObjectAttributes.State.Contains("closed")) await _threadWatcher.RemoveEveryone(threadChannel);
+                        if (state.Contains("closed") || state.Contains("merged")) await _threadWatcher.RemoveEveryone(threadChannel);
                     }
                     else _debugger.Log($"Couldn't find a thread '{title}'.", new DebugOptions(this, "[THREAD NOT FOUND]"));
                 }
