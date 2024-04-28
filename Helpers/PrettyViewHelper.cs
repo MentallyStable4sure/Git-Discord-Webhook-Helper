@@ -41,7 +41,7 @@ namespace MentallyStable.GitHelper.Helpers
 
             if (descriptor == Endpoints.GITLAB_COMMENT_ATTRIBUTE)
             {
-                return $"✨ [{response.Project.PathWithNamespace}] ✨\n__Author:__ ** {author} **\n\n> **{response.User.Name}** says: \n\n`✏️ {response.ObjectAttributes.Note}`";
+                return $"✨ [{response.Project.PathWithNamespace}] ✨\n__Author:__ ** {author} **\n\n> **{response.User.Name}** commented: \n\n`✏️ {response.ObjectAttributes.Note}`";
             }
             else return $"✨ [{response.Project.PathWithNamespace}] ✨\n__Author:__ ** {author} **\n\n> __Target:__ ** {response.ObjectAttributes.TargetBranch} **\n> __Source:__ ** {response.ObjectAttributes.SourceBranch} **\n\n`✏️ {response.ObjectAttributes.Description}`";
         }
