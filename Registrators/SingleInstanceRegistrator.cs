@@ -54,6 +54,8 @@ namespace MentallyStable.GitHelper.Registrators
             builder.Services.AddSingleton<DiscordBotWrapper>(discordBot);
             builder.Services.AddSingleton<BroadcastDataService>(_broadcastDataService);
             builder.Services.AddSingleton<TrackingService>(_trackingService);
+            builder.Services.AddSingleton<PrettyViewWrapService>(_prettyViewWrapService);
+            builder.Services.AddSingleton<UserLinkEstablisherService>(_userLinkEstablisherService);
 
             StartBot(discordBot);
         }
