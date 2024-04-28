@@ -36,7 +36,7 @@ namespace MentallyStable.GitHelper.Commands
                 allPrefxiesCollected += $"{prefix}; ";
             }
 
-            await ctx.CreateResponseAsync(allPrefxiesCollected);
+            await ctx.CreateResponseAsync($"> 🚩 {allPrefxiesCollected}");
         }
     }
 }

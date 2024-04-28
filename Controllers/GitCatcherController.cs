@@ -48,6 +48,7 @@ namespace MentallyStable.GitHelper.Controllers
             //parse action type if possible (if not parse prefixes) and if its not a comment create a new thread
             _debugger.Log(response.ObjectKind, new DebugOptions(this, "[webhook-raw]"));
             string[] lookupKeys = response.ObjectKind.ToLookupKeys(response);
+            string[] loweredLookupKeys = response.ObjectKind.ToLookupKeysLowered(response);
             string[] identifiers = response.CreateIdentifiers();
 
             //catch all implementation if we've set a channel id (CatchAllAPI_ID) in discordconfig
@@ -63,14 +64,14 @@ namespace MentallyStable.GitHelper.Controllers
             string title = lookupKeys.ToTitle();
             foreach (var channel in channelsTracked)
             {
-                if (!_threadWatcher.IsThreadCreated(channel, lookupKeys)) //response.ObjectAttributes.Title)
+                if (!_threadWatcher.IsThreadCreated(channel, loweredLookupKeys)) //response.ObjectAttributes.Title)
                 {
                     await _threadWatcher.CreateThread(channel, title, threadedMessage, identifiers);
                     _debugger.Log($"Created a thread named: '{title}'.", new DebugOptions(this, "[THREAD CREATED]"));
                 }
                 else
                 {
-                    var threadChannel = _threadWatcher.FindThread(channel, lookupKeys); //response.ObjectAttributes.Title);
+                    var threadChannel = _threadWatcher.FindThread(channel, loweredLookupKeys); //response.ObjectAttributes.Title);
                     if (threadChannel != null)
                     {
                         await _threadWatcher.Post(threadChannel, threadedMessage);

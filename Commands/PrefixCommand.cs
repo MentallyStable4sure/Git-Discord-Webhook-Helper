@@ -14,6 +14,7 @@ namespace MentallyStable.GitHelper.Commands
         {
             string message = string.Empty;
             DiscordChannel channel = ctx.Channel;
+            prefix = prefix.ToLower();
 
             var data = BroadcastDataService.GetChannelData(channel.Id);
             if (TrackingService.IsChannelTracked(channel.Id))
@@ -35,6 +36,7 @@ namespace MentallyStable.GitHelper.Commands
         {
             string message = string.Empty;
             DiscordChannel channel = ctx.Channel;
+            prefix = prefix.ToLower();
 
             var data = BroadcastDataService.GetChannelData(channel.Id);
             if (TrackingService.IsChannelTracked(channel.Id))

@@ -60,6 +60,17 @@ namespace MentallyStable.GitHelper.Helpers
             }
         }
 
+        public static string[] ToLookupKeysLowered(this string objectKind, GitlabResponse response)
+        {
+            string[] keys = objectKind.ToLookupKeys(response);
+            for (int i = 0; i < keys.Length; i++)
+            {
+                keys[i] = keys[i].ToLower();
+            }
+
+            return keys;
+        }
+
         public static string ToTitle(this string[] lookupKeys)
         {
             string title = string.Empty;

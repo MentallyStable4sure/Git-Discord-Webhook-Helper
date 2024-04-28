@@ -49,7 +49,7 @@ namespace MentallyStable.GitHelper.Services.Discord
         {
             foreach (var thread in discordChannel.Threads)
             {
-                if (lookupKeys.Contains($"WIP: {thread.Name}") || lookupKeys.Contains(thread.Name)) return true;
+                if (lookupKeys.Contains($"WIP: {thread.Name}".ToLower()) || lookupKeys.Contains(thread.Name.ToLower())) return true;
             }
 
             return false;
@@ -69,7 +69,7 @@ namespace MentallyStable.GitHelper.Services.Discord
         {
             foreach (var thread in channel.Threads)
             {
-                if (lookupKeys.Contains(thread.Name) || lookupKeys.Contains($"WIP: {thread.Name}")) return thread;
+                if (lookupKeys.Contains(thread.Name.ToLower()) || lookupKeys.Contains($"WIP: {thread.Name}".ToLower())) return thread;
             }
 
             return null;
