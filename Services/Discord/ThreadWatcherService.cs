@@ -47,6 +47,7 @@ namespace MentallyStable.GitHelper.Services.Discord
 
         public bool IsThreadCreated(DiscordChannel discordChannel, string[] lookupKeys)
         {
+            if (discordChannel.Threads == null || discordChannel.Threads.Count <= 0) return false;
             foreach (var thread in discordChannel.Threads)
             {
                 if (lookupKeys.Contains($"WIP: {thread.Name}".ToLower()) || lookupKeys.Contains(thread.Name.ToLower())) return true;

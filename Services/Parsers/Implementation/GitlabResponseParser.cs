@@ -35,11 +35,16 @@ namespace MentallyStable.GitHelper.Services.Parsers.Implementation
         {
             if (!description.Contains('@')) return description;
 
-            string[] divided = description.Split(' ', '@');
+            string[] divided = description.Split('@', ' ');
+
+            foreach (var item in divided)
+            {
+                Console.WriteLine(item);
+            }
 
             for (int i = 0; i < divided.Length; i++)
             {
-                var link = establisher.GetConnectionStrict(divided[i]);
+                var link = establisher.GetConnection(divided[i]);
                 if (link == null) continue;
                 var user = await client.GetUserAsync(link.DiscordSnowflakeId);
                 divided[i] = $"`{user.Mention}`";

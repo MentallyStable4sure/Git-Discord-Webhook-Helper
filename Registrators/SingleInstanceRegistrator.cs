@@ -6,6 +6,7 @@ using MentallyStable.GitHelper.Services.Discord;
 using MentallyStable.GitHelper.Services.Development;
 using MentallyStable.GitHelper.Services.Discord.Bot;
 using MentallyStable.GitHelper.Services.Parsers.Implementation;
+using MentallyStable.GitHelper.Helpers;
 
 namespace MentallyStable.GitHelper.Registrators
 {
@@ -21,6 +22,7 @@ namespace MentallyStable.GitHelper.Registrators
         private readonly UserLinkEstablisherService _userLinkEstablisherService;
         private readonly PrettyViewWrapService _prettyViewWrapService;
         private readonly ThreadWatcherService _threadWatcherService;
+        private readonly GitCatcherHelper _catcherHelper;
 
         public SingleInstanceRegistrator(ConfigsRegistrator configs)
         {
@@ -35,6 +37,7 @@ namespace MentallyStable.GitHelper.Registrators
             _userLinkEstablisherService = new UserLinkEstablisherService(configs.LinkData);
             _prettyViewWrapService = new PrettyViewWrapService(_userLinkEstablisherService, _discordClient, new GitlabResponseParser());
             _threadWatcherService = new ThreadWatcherService(_userLinkEstablisherService, _discordClient);
+            _catcherHelper = new GitCatcherHelper(_threadWatcherService, _broadcastDataService);
 
 
             _services = new List<IService>()
@@ -43,7 +46,8 @@ namespace MentallyStable.GitHelper.Registrators
                 _trackingService,
                 _userLinkEstablisherService,
                 _prettyViewWrapService,
-                _threadWatcherService
+                _threadWatcherService,
+                _catcherHelper
             };
         }
 
@@ -61,6 +65,7 @@ namespace MentallyStable.GitHelper.Registrators
             builder.Services.AddSingleton<PrettyViewWrapService>(_prettyViewWrapService);
             builder.Services.AddSingleton<UserLinkEstablisherService>(_userLinkEstablisherService);
             builder.Services.AddSingleton<ThreadWatcherService>(_threadWatcherService);
+            builder.Services.AddSingleton<GitCatcherHelper>(_catcherHelper);
 
             StartBot(discordBot);
         }
