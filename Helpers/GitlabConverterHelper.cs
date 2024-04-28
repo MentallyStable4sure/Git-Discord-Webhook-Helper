@@ -14,7 +14,7 @@ namespace MentallyStable.GitHelper.Helpers
                     return string.Empty;
 
                 case Endpoints.GITLAB_MERGE_REQUEST_ATTRIBUTE:
-                    return CheckMergeRequestState(actionDiffer.ObjectAttributes.State.ToLower());
+                    return CheckMergeRequestState(actionDiffer.ObjectAttributes.State.ToLower(), actionDiffer.ObjectAttributes.Action);
 
                 case Endpoints.GITLAB_COMMENT_ATTRIBUTE:
                     return CheckCommentAppliedTo(actionDiffer.ObjectAttributes.NoteableType.ToLower());
@@ -69,8 +69,9 @@ namespace MentallyStable.GitHelper.Helpers
             else return "https://bunbun.cloud/admin/funkymonke/img/_drip_monkey_banner.gif";
         }
 
-        private static string CheckMergeRequestState(string actionDiffer)
+        private static string CheckMergeRequestState(string actionDiffer, string prAction)
         {
+            if(prAction != null && prAction.Length > 0 && prAction == "update") return "https://bunbun.cloud/admin/funkymonke/img/prupdated.png";
             if (actionDiffer == "opened") return "https://bunbun.cloud/admin/funkymonke/img/prcreated.png";
             else if (actionDiffer == "closed") return "https://bunbun.cloud/admin/funkymonke/img/prclosed.png";
             else return "https://bunbun.cloud/admin/funkymonke/img/prmerged.png";

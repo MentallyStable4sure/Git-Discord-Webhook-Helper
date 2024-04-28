@@ -5,6 +5,7 @@ using MentallyStable.GitHelper.Data.Development;
 using MentallyStable.GitHelper.Services.Discord;
 using MentallyStable.GitHelper.Services.Development;
 using MentallyStable.GitHelper.Services.Discord.Bot;
+using MentallyStable.GitHelper.Services.Parsers.Implementation;
 
 namespace MentallyStable.GitHelper.Registrators
 {
@@ -17,6 +18,8 @@ namespace MentallyStable.GitHelper.Registrators
 
         private readonly BroadcastDataService _broadcastDataService;
         private readonly TrackingService _trackingService;
+        private readonly UserLinkEstablisherService _userLinkEstablisherService;
+        private readonly PrettyViewWrapService _prettyViewWrapService;
 
         public SingleInstanceRegistrator(ConfigsRegistrator configs)
         {
@@ -28,11 +31,16 @@ namespace MentallyStable.GitHelper.Registrators
 
             _broadcastDataService = new BroadcastDataService(configs.BroadcastData, _discordClient);
             _trackingService = new TrackingService(_discordClient, configs.BroadcastData);
+            _userLinkEstablisherService = new UserLinkEstablisherService(configs.LinkData);
+            _prettyViewWrapService = new PrettyViewWrapService(_userLinkEstablisherService, _discordClient, new GitlabResponseParser());
+
 
             _services = new List<IService>()
             {
                 _broadcastDataService,
-                _trackingService
+                _trackingService,
+                _userLinkEstablisherService,
+                _prettyViewWrapService
             };
         }
 
@@ -47,6 +55,8 @@ namespace MentallyStable.GitHelper.Registrators
             builder.Services.AddSingleton<DiscordBotWrapper>(discordBot);
             builder.Services.AddSingleton<BroadcastDataService>(_broadcastDataService);
             builder.Services.AddSingleton<TrackingService>(_trackingService);
+            builder.Services.AddSingleton<PrettyViewWrapService>(_prettyViewWrapService);
+            builder.Services.AddSingleton<UserLinkEstablisherService>(_userLinkEstablisherService);
 
             StartBot(discordBot);
         }

@@ -1,4 +1,7 @@
 ﻿
+using DSharpPlus;
+using MentallyStable.GitHelper.Services.Discord;
+
 namespace MentallyStable.GitHelper.Services.Parsers
 {
     public interface IResponseParser<TResponse>
@@ -10,5 +13,7 @@ namespace MentallyStable.GitHelper.Services.Parsers
         /// <param name="prefixes">All prefixes to parse</param>
         /// <returns>Prefixes found in this response</returns>
         public string[] ParsePrefixes(TResponse response, string[] prefixes);
+
+        public Task<string> ParseLinks(DiscordClient client, string description, UserLinkEstablisherService establisher);
     }
 }

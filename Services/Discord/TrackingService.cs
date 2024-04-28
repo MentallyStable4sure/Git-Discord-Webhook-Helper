@@ -1,9 +1,6 @@
 ﻿using DSharpPlus;
-using Newtonsoft.Json;
 using DSharpPlus.Entities;
-using MentallyStable.GitHelper.Data;
 using MentallyStable.GitHelper.Data.Discord;
-using MentallyStable.GitHelper.Data.Database;
 
 namespace MentallyStable.GitHelper.Services.Discord
 {
@@ -35,7 +32,7 @@ namespace MentallyStable.GitHelper.Services.Discord
                 if (_broadcastData[channelId].PrefixesToTrack == prefixes) return;
                 _broadcastData[channelId].PrefixesToTrack = prefixes;
                 _broadcastData[channelId].DiscodChannelReference = channel;
-                UpdateJson(_broadcastData);
+                DataUpdater.UpdateBroadcastData(_broadcastData);
                 return;
             }
 
@@ -45,7 +42,7 @@ namespace MentallyStable.GitHelper.Services.Discord
                 PrefixesToTrack = prefixes,
                 DiscodChannelReference = channel
             });
-            UpdateJson(_broadcastData);
+            DataUpdater.UpdateBroadcastData(_broadcastData);
         }
 
         public void TrackChannel(DiscordChannel channel, string[] prefixes)
@@ -55,7 +52,7 @@ namespace MentallyStable.GitHelper.Services.Discord
                 if (_broadcastData[channel.Id].PrefixesToTrack == prefixes) return;
                 _broadcastData[channel.Id].PrefixesToTrack = prefixes;
                 _broadcastData[channel.Id].DiscodChannelReference = channel;
-                UpdateJson(_broadcastData);
+                DataUpdater.UpdateBroadcastData(_broadcastData);
                 return;
             }
 
@@ -65,21 +62,21 @@ namespace MentallyStable.GitHelper.Services.Discord
                 PrefixesToTrack = prefixes,
                 DiscodChannelReference = channel
             });
-            UpdateJson(_broadcastData);
+            DataUpdater.UpdateBroadcastData(_broadcastData);
         }
 
         public void UntrackChannel(DiscordChannel channel)
         {
             if (!_broadcastData.ContainsKey(channel.Id)) return;
             _broadcastData.Remove(channel.Id);
-            UpdateJson(_broadcastData);
+            DataUpdater.UpdateBroadcastData(_broadcastData);
         }
 
         public void UntrackChannel(ulong channelId)
         {
             if (!_broadcastData.ContainsKey(channelId)) return;
             _broadcastData.Remove(channelId);
-            UpdateJson(_broadcastData);
+            DataUpdater.UpdateBroadcastData(_broadcastData);
         }
 
         public void AddPrefix(DiscordChannel channel, string prefix)
@@ -91,7 +88,7 @@ namespace MentallyStable.GitHelper.Services.Discord
             list.Add(prefix);
             _broadcastData[channel.Id].PrefixesToTrack = list.ToArray();
 
-            UpdateJson(_broadcastData);
+            DataUpdater.UpdateBroadcastData(_broadcastData);
         }
 
         public void RemovePrefix(DiscordChannel channel, string prefix)
@@ -103,14 +100,9 @@ namespace MentallyStable.GitHelper.Services.Discord
             list.Remove(prefix);
             _broadcastData[channel.Id].PrefixesToTrack = list.ToArray();
 
-            UpdateJson(_broadcastData);
+            DataUpdater.UpdateBroadcastData(_broadcastData);
         }
 
         public bool IsChannelTracked(ulong channelId) => _broadcastData.ContainsKey(channelId);
-
-        private void UpdateJson(Dictionary<ulong, BroadcastData> broadcastData)
-        {
-            DataGrabber.CreateConfig(JsonConvert.SerializeObject(broadcastData), Endpoints.DISCORD_BROADCASTERS_CONFIG);
-        }
     }
 }
