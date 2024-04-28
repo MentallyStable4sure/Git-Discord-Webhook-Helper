@@ -11,15 +11,12 @@ namespace MentallyStable.GitHelper.Commands
         [SlashCommand("track", "adds this channel (which u typing in rn) to a tracking ones with prefixes provided")]
         public async Task TrackChannel(InteractionContext ctx, [Option("Prefixes", "prefixes to keep track by this channel ('all' if null [NOT RECOMMENDED])")] string prefix1, [Option("Prefix2", "More prefixes to track (optional)")] string prefix2 = null, [Option("Prefix3", "More prefixes to track (optional)")]  string prefix3 = null)
         {
-            Console.WriteLine("1");
             if (TrackingService.IsChannelTracked(ctx.Channel.Id))
             {
-                Console.WriteLine("2");
                 await ctx.CreateResponseAsync($"> {ctx.Channel.Mention} is already tracked, to add more prefixes use track-addprefix");
                 return;
             }
 
-            Console.WriteLine("3");
             List<string> prefixes = new List<string> { prefix1?.ToLower(), prefix2?.ToLower(), prefix3?.ToLower() };
             List<string> actualPrefixes = new List<string>();
             foreach (var prefix in prefixes)
@@ -28,17 +25,14 @@ namespace MentallyStable.GitHelper.Commands
                 actualPrefixes.Add(prefix);
             }
 
-            Console.WriteLine("4");
             TrackingService.TrackChannel(ctx.Channel, actualPrefixes.ToArray());
 
-            Console.WriteLine("5");
             string allPrefxiesCollected = "> ";
             foreach (var prefix in actualPrefixes)
             {
                 allPrefxiesCollected += $"{prefix}; ";
             }
 
-            Console.WriteLine("6");
             await ctx.CreateResponseAsync($"> Successfully added channel {ctx.Channel.Mention} to tracked channels with prefixes: \n{allPrefxiesCollected}");
         }
 
