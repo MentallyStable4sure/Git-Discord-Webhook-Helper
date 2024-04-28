@@ -20,6 +20,7 @@ namespace MentallyStable.GitHelper.Registrators
         private readonly TrackingService _trackingService;
         private readonly UserLinkEstablisherService _userLinkEstablisherService;
         private readonly PrettyViewWrapService _prettyViewWrapService;
+        private readonly ThreadWatcherService _threadWatcherService;
 
         public SingleInstanceRegistrator(ConfigsRegistrator configs)
         {
@@ -33,6 +34,7 @@ namespace MentallyStable.GitHelper.Registrators
             _trackingService = new TrackingService(_discordClient, configs.BroadcastData);
             _userLinkEstablisherService = new UserLinkEstablisherService(configs.LinkData);
             _prettyViewWrapService = new PrettyViewWrapService(_userLinkEstablisherService, _discordClient, new GitlabResponseParser());
+            _threadWatcherService = new ThreadWatcherService(_userLinkEstablisherService, _discordClient);
 
 
             _services = new List<IService>()
@@ -40,7 +42,8 @@ namespace MentallyStable.GitHelper.Registrators
                 _broadcastDataService,
                 _trackingService,
                 _userLinkEstablisherService,
-                _prettyViewWrapService
+                _prettyViewWrapService,
+                _threadWatcherService
             };
         }
 
@@ -57,6 +60,7 @@ namespace MentallyStable.GitHelper.Registrators
             builder.Services.AddSingleton<TrackingService>(_trackingService);
             builder.Services.AddSingleton<PrettyViewWrapService>(_prettyViewWrapService);
             builder.Services.AddSingleton<UserLinkEstablisherService>(_userLinkEstablisherService);
+            builder.Services.AddSingleton<ThreadWatcherService>(_threadWatcherService);
 
             StartBot(discordBot);
         }

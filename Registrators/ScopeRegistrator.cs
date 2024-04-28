@@ -12,7 +12,6 @@ namespace MentallyStable.GitHelper.Registrators
         {
             builder.Services.AddScoped<IDebugger, Debugger>();
             builder.Services.AddScoped<IResponseParser<GitlabResponse>, GitlabResponseParser>(); //can be changed to any parser
-            builder.Services.AddScoped<IThreadWatcher, ThreadWatcherService>();
 
             return Task.CompletedTask;
         }

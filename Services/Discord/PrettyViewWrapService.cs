@@ -25,12 +25,7 @@ namespace MentallyStable.GitHelper.Services.Discord
 
         public async Task<DiscordMessageBuilder> WrapResponseInEmbed(GitlabResponse response, string descriptor, string[] lookupKeys)
         {
-            string[] identifiers = new string[3]
-                        {
-                            response.User.Username,
-                            response.User.Email,
-                            response.User.Name
-                        };
+            string[] identifiers = response.CreateIdentifiers();
             string avatar = await CheckAvatarBasedOnLink(response, identifiers);
             string description = GetDescriptionBasedOnDescriptor(descriptor, response);
             description = await _parser.ParseLinks(_client, description, _establisherService);

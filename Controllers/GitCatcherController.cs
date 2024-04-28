@@ -19,13 +19,13 @@ namespace MentallyStable.GitHelper.Controllers
         private readonly BroadcastDataService _broadcastService;
         private readonly DiscordConfig _discordConfig;
         private readonly IResponseParser<GitlabResponse> _gitResponseParser;
-        private readonly IThreadWatcher _threadWatcher;
-        private readonly PrettyViewWrapService _PrettyViewWrapService;
+        private readonly ThreadWatcherService _threadWatcher;
+        private readonly PrettyViewWrapService _prettyViewWrapService;
 
         public GitCatcherController(IDebugger logger,
             BroadcastDataService broadcastService, DiscordConfig config,
             IResponseParser<GitlabResponse> responseParser,
-            IThreadWatcher threadWatcher,
+            ThreadWatcherService threadWatcher,
             PrettyViewWrapService prettyViewWrapService) : base()
         {
             _debugger = logger;
@@ -33,7 +33,7 @@ namespace MentallyStable.GitHelper.Controllers
             _discordConfig = config;
             _gitResponseParser = responseParser;
             _threadWatcher = threadWatcher;
-            _PrettyViewWrapService = prettyViewWrapService;
+            _prettyViewWrapService = prettyViewWrapService;
         }
 
         [HttpPost("ping")]
@@ -48,23 +48,24 @@ namespace MentallyStable.GitHelper.Controllers
             //parse action type if possible (if not parse prefixes) and if its not a comment create a new thread
             _debugger.Log(response.ObjectKind, new DebugOptions(this, "[webhook-raw]"));
             string[] lookupKeys = response.ObjectKind.ToLookupKeys(response);
+            string[] identifiers = response.CreateIdentifiers();
 
             //catch all implementation if we've set a channel id (CatchAllAPI_ID) in discordconfig
-            await CatchAll(await _PrettyViewWrapService.WrapResponseInEmbed(response, response.ObjectKind, lookupKeys));
+            await CatchAll(await _prettyViewWrapService.WrapResponseInEmbed(response, response.ObjectKind, lookupKeys));
 
             //parse all out prefixes and see if it even needed to be tracked
             var prefixesFound = _gitResponseParser.ParsePrefixes(response, _broadcastService.GetAllPrefixes());
             if (prefixesFound.Length <= 0) return $"<h4>We have not found any prefixes tracked in your response, if this problem persist check if you have any prefixes you track in configs/{Endpoints.DISCORD_BROADCASTERS_CONFIG}</h4>";
 
             var channelsTracked = _broadcastService.GetChannels(prefixesFound);
-            var threadedMessage = await _PrettyViewWrapService.WrapResponseInEmbed(response, response.ObjectKind, lookupKeys);
+            var threadedMessage = await _prettyViewWrapService.WrapResponseInEmbed(response, response.ObjectKind, lookupKeys);
 
             string title = lookupKeys.ToTitle();
             foreach (var channel in channelsTracked)
             {
                 if (!_threadWatcher.IsThreadCreated(channel, lookupKeys)) //response.ObjectAttributes.Title)
                 {
-                    await _threadWatcher.CreateThread(channel, title, threadedMessage);
+                    await _threadWatcher.CreateThread(channel, title, threadedMessage, identifiers);
                     _debugger.Log($"Created a thread named: '{title}'.", new DebugOptions(this, "[THREAD CREATED]"));
                 }
                 else
@@ -73,7 +74,7 @@ namespace MentallyStable.GitHelper.Controllers
                     if (threadChannel != null)
                     {
                         await _threadWatcher.Post(threadChannel, threadedMessage);
-                        if (response.ObjectAttributes.State.Contains("closed")) await threadChannel.DeleteAsync();
+                        if (response.ObjectAttributes.State.Contains("closed")) await _threadWatcher.RemoveEveryone(threadChannel);
                     }
                     else _debugger.Log($"Couldn't find a thread '{title}'.", new DebugOptions(this, "[THREAD NOT FOUND]"));
                 }
