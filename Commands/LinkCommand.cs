@@ -23,7 +23,7 @@ namespace MentallyStable.GitHelper.Commands
             string message = string.Empty;
             LinkEstablisherService.LinkAccount(gitIdentifier, ctx.User.Id);
 
-            await ctx.CreateResponseAsync($"> Successfully linked {gitIdentifier} 🔗 {ctx.User.Mention}");
+            await ctx.CreateResponseAsync($"> ✅ Successfully linked {gitIdentifier} 🔗 {ctx.User.Mention}");
         }
 
         [SlashCommand("unlink", "removes this your gitIdentifier from all data channels ever tracked and deletes a connection")]
@@ -31,12 +31,12 @@ namespace MentallyStable.GitHelper.Commands
         {
             if(LinkEstablisherService.GetConnection(ctx.User.Id) == null)
             {
-                await ctx.CreateResponseAsync($"> No connections found by identifier {gitIdentifier}⛓️");
+                await ctx.CreateResponseAsync($"> ❌ No connections found by identifier {gitIdentifier}⛓️");
                 return;
             }
 
             LinkEstablisherService.UnlinkAccount(gitIdentifier);
-            await ctx.CreateResponseAsync($"> Link 🔗 successfully removed from {gitIdentifier}⛓️");
+            await ctx.CreateResponseAsync($"> ✅ Link 🔗 successfully removed from {gitIdentifier}⛓️");
         }
 
         [SlashCommand("connections", "will send you all your connections to the account (don't worry, we will DM you in private)")]

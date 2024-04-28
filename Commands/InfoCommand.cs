@@ -26,7 +26,7 @@ namespace MentallyStable.GitHelper.Commands
             var data = BroadcastDataService.GetChannelData(ctx.Channel.Id);
             if (data == null)
             {
-                await ctx.CreateResponseAsync("> No prefixes found. Use /track [PREFIX, PREFIXm, PREFIX,...] to track prefixes on this channel");
+                await ctx.CreateResponseAsync("> ❌ No prefixes found. Use /track [PREFIX, PREFIXm, PREFIX,...] to track prefixes on this channel");
                 return;
             }
 
@@ -36,7 +36,7 @@ namespace MentallyStable.GitHelper.Commands
                 allPrefxiesCollected += $"{prefix}; ";
             }
 
-            await ctx.CreateResponseAsync($"> 🚩 {allPrefxiesCollected}");
+            await ctx.CreateResponseAsync($"> 🚩 These prefixes are being tracked by current channel: \n{allPrefxiesCollected} 🚩");
         }
     }
 }

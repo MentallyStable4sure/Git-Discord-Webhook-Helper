@@ -20,12 +20,12 @@ namespace MentallyStable.GitHelper.Commands
             if (TrackingService.IsChannelTracked(channel.Id))
             {
                 TrackingService.AddPrefix(channel, prefix);
-                message = $"> Successfully added prefix '{prefix}' to a {channel.Mention} to keep track of";
+                message = $"> ✅ Successfully added prefix ** '{prefix}' ** to a ** {channel.Mention} ** to keep track of ✨";
             }
             else
             {
                 TrackingService.TrackChannel(channel, new string[1] { prefix });
-                message = $"> Channel {channel.Mention} wasnt tracked before, we added it to a tracked list with prefix '{prefix}'";
+                message = $"> ❌ Channel {channel.Mention} wasnt tracked __before__, so we __added__ it to a tracked list with prefix ** '{prefix}' ** ";
             }
 
             await ctx.CreateResponseAsync(message);
@@ -42,13 +42,13 @@ namespace MentallyStable.GitHelper.Commands
             if (TrackingService.IsChannelTracked(channel.Id))
             {
                 TrackingService.RemovePrefix(channel, prefix);
-                message = $"> Successfully removed prefix '{prefix}' to a {channel.Mention} to keep track of";
+                message = $"> ✅ Successfully removed prefix ** '{prefix}' ** to a ** {channel.Mention} ** to keep track of ✨";
 
-                if (!TrackingService.IsChannelTracked(channel.Id)) message = $"> Removed prefix '{prefix}' from {channel.Mention}, but it looks like it was the last prefix, so channel was deleted from tracked list";
+                if (!TrackingService.IsChannelTracked(channel.Id)) message = $"> ✅ Removed prefix ** '{prefix}' ** from ** {channel.Mention}, ** but it looks like it was the last prefix, so channel was __deleted__ from tracked list";
             }
             else
             {
-                message = $"> Channel {channel.Mention} wasnt tracked before by any prefixes, so there is no need to untrack any prefix.";
+                message = $"> ❌ Channel {channel.Mention} wasnt tracked before by any prefixes, so there is no need to untrack any prefix.";
             }
 
             await ctx.CreateResponseAsync(message);

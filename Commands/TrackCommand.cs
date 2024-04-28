@@ -13,7 +13,7 @@ namespace MentallyStable.GitHelper.Commands
         {
             if (TrackingService.IsChannelTracked(ctx.Channel.Id))
             {
-                await ctx.CreateResponseAsync($"> {ctx.Channel.Mention} is already tracked, to add more prefixes use track-addprefix");
+                await ctx.CreateResponseAsync($"> ❌ ** {ctx.Channel.Mention} ** is __already tracked__, to add more prefixes use **/addprefix** 🚩");
                 return;
             }
 
@@ -33,7 +33,7 @@ namespace MentallyStable.GitHelper.Commands
                 allPrefxiesCollected += $"{prefix}; ";
             }
 
-            await ctx.CreateResponseAsync($"> Successfully added channel {ctx.Channel.Mention} to tracked channels with prefixes: \n{allPrefxiesCollected}");
+            await ctx.CreateResponseAsync($"> ✅ Successfully added channel ** {ctx.Channel.Mention} ** to tracked channels with prefixes: \n{allPrefxiesCollected}");
         }
 
         [SlashCommand("untrack", "removes this channel (which u typing in rn) from a tracking ones by git webhooks (with all prefixes)")]
@@ -41,15 +41,15 @@ namespace MentallyStable.GitHelper.Commands
         {
             if (!TrackingService.IsChannelTracked(ctx.Channel.Id))
             {
-                await ctx.CreateResponseAsync($"> {ctx.Channel.Mention} was not tracked before, no changes made");
+                await ctx.CreateResponseAsync($"> ❌ ** {ctx.Channel.Mention} ** was not tracked before, no changes made");
                 return;
             }
 
             var data = BroadcastDataService.GetChannelData(ctx.Channel.Id);
 
             string message = string.Empty;
-            if (data == null) message = $"> Channel {ctx.Channel.Mention} wasnt tracked before, not found any prefixes attached to this channel";
-            else message = $"> Successfully removed channel {ctx.Channel.Mention} from tracked channels";
+            if (data == null) message = $"> ❌ Channel ** {ctx.Channel.Mention} ** wasnt tracked before, __not found__ any prefixes attached to this channel";
+            else message = $"> ✅ Successfully removed channel ** {ctx.Channel.Mention} ** from tracked channels";
 
             TrackingService.UntrackChannel(ctx.Channel);
             await ctx.CreateResponseAsync(message);
