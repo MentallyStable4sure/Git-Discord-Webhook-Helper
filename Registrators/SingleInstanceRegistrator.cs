@@ -17,6 +17,7 @@ namespace MentallyStable.GitHelper.Registrators
 
         private readonly BroadcastDataService _broadcastDataService;
         private readonly TrackingService _trackingService;
+        private readonly UserLinkEstablisherService _userLinkEstablisherService;
 
         public SingleInstanceRegistrator(ConfigsRegistrator configs)
         {
@@ -28,11 +29,14 @@ namespace MentallyStable.GitHelper.Registrators
 
             _broadcastDataService = new BroadcastDataService(configs.BroadcastData, _discordClient);
             _trackingService = new TrackingService(_discordClient, configs.BroadcastData);
+            _userLinkEstablisherService = new UserLinkEstablisherService(configs.LinkData);
+
 
             _services = new List<IService>()
             {
                 _broadcastDataService,
-                _trackingService
+                _trackingService,
+                _userLinkEstablisherService
             };
         }
 

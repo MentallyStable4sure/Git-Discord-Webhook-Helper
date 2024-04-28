@@ -5,6 +5,7 @@
         //--------------CONFIGS--------------
         public const string DISCORD_CONFIG = "discordconfig.json";
         public const string DISCORD_BROADCASTERS_CONFIG = "discordbroadcasters.json";
+        public const string ESTABLISHED_CONNECTIONS_CONFIG = "establishedconnections.json";
 
 
         //-----STATIC NAMINGS/ATTRIBUTES-----
