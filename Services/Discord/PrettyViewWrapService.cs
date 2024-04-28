@@ -25,15 +25,9 @@ namespace MentallyStable.GitHelper.Services.Discord
 
         public async Task<DiscordMessageBuilder> WrapResponseInEmbed(GitlabResponse response, string descriptor, string[] lookupKeys)
         {
-            string[] identifiers = new string[3]
-                        {
-                            response.User.Username,
-                            response.User.Email,
-                            response.User.Name
-                        };
+            string[] identifiers = response.CreateIdentifiers();
             string avatar = await CheckAvatarBasedOnLink(response, identifiers);
-            string description = GetDescriptionBasedOnDescriptor(descriptor, response);
-            description = await _parser.ParseLinks(_client, description, _establisherService);
+            string description = await GetDescriptionBasedOnDescriptor(descriptor, response);
 
             return new DiscordMessageBuilder()
                 .WithEmbed(new DiscordEmbedBuilder()
@@ -70,17 +64,34 @@ namespace MentallyStable.GitHelper.Services.Discord
             }
         }
 
-        private static string GetDescriptionBasedOnDescriptor(string descriptor, GitlabResponse response)
+        private async Task<string> GetDescriptionBasedOnDescriptor(string descriptor, GitlabResponse response)
         {
             string author = response.ObjectAttributes.LastCommit.Author.Name;
             if (string.IsNullOrEmpty(author)) author = response.MergeRequest.LastCommit.Author.Name;
             if (string.IsNullOrEmpty(author)) author = response.User.Name;
 
+            string lastCommit = string.IsNullOrEmpty(response.MergeRequest.LastCommit.Message) ? response.ObjectAttributes.LastCommit.Message : response.MergeRequest.LastCommit.Message;
+            if (string.IsNullOrEmpty(lastCommit)) lastCommit = string.Empty;
+            else
+            {
+                var parsedLinksLastCommit = await _parser.ParseLinks(_client, lastCommit, _establisherService);
+                lastCommit = $"\n\n>>> 🚩 Last commit: {parsedLinksLastCommit}";
+            }
+
+            string info = string.Empty;
             if (descriptor == Endpoints.GITLAB_COMMENT_ATTRIBUTE)
             {
-                return $"✨ [{response.Project.PathWithNamespace}] ✨\n__Author:__ ** {author} **\n\n> **{response.User.Name}** commented: \n\n`✏️ {response.ObjectAttributes.Note}`";
+                var note = await _parser.ParseLinks(_client, response.ObjectAttributes.Note, _establisherService);
+                info = $"✨ ** {response.Project.PathWithNamespace} ** ✨\n📌 __Author:__ ** {author} **\n\n> **{response.User.Name}** commented: \n `{note}`";
             }
-            else return $"✨ [{response.Project.PathWithNamespace}] ✨\n__Author:__ ** {author} **\n\n> __Target:__ ** {response.ObjectAttributes.TargetBranch} **\n> __Source:__ ** {response.ObjectAttributes.SourceBranch} **\n\n`✏ {response.ObjectAttributes.Description}`";
+            else
+            {
+                var description = await _parser.ParseLinks(_client, response.ObjectAttributes.Description, _establisherService);
+                info = $"✨ ** {response.Project.PathWithNamespace} ** ✨\n📌 __Author:__ ** {author} **\n\n> 🎯 __Target:__ ** {response.ObjectAttributes.TargetBranch} **\n> 📦 __Source:__ ** {response.ObjectAttributes.SourceBranch} **\n `{description}` ";
+            }
+
+            info += lastCommit;
+            return info;
         }
     }
 }

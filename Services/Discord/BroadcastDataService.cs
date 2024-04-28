@@ -39,6 +39,13 @@ namespace MentallyStable.GitHelper.Services.Discord
             var channels = new List<DiscordChannel>();
             foreach (var data in _broadcastData.Values)
             {
+                if (data.DiscodChannelReference == null) continue;
+                if (data.PrefixesToTrack.Contains("all"))
+                {
+                    channels.Add(data.DiscodChannelReference);
+                    continue;
+                }
+
                 foreach (var prefixInData in data.PrefixesToTrack)
                 {
                     if (!prefixes.Any(element => element == prefixInData) && prefixInData != "all") continue;

@@ -6,6 +6,16 @@ namespace MentallyStable.GitHelper.Helpers
 {
     public static class GitlabConverterHelper
     {
+        public static string[] CreateIdentifiers(this GitlabResponse response)
+        {
+            return new string[3]
+            {
+                response.User.Username,
+                response.User.Email,
+                response.User.Name
+            };
+        }
+
         public static string ToImage(this string resposeAction, GitlabResponse actionDiffer)
         {
             switch (resposeAction.ToLower())
@@ -50,6 +60,17 @@ namespace MentallyStable.GitHelper.Helpers
             }
         }
 
+        public static string[] ToLookupKeysLowered(this string objectKind, GitlabResponse response)
+        {
+            string[] keys = objectKind.ToLookupKeys(response);
+            for (int i = 0; i < keys.Length; i++)
+            {
+                keys[i] = keys[i].ToLower();
+            }
+
+            return keys;
+        }
+
         public static string ToTitle(this string[] lookupKeys)
         {
             string title = string.Empty;
@@ -64,7 +85,7 @@ namespace MentallyStable.GitHelper.Helpers
 
         private static string CheckCommentAppliedTo(string actionDiffer)
         {
-            if (actionDiffer == Endpoints.GITLAB_COMMENT_PR_TYPE.ToLower()) return "https://bunbun.cloud/admin/funkymonke/img/prcomment.png";
+            if (actionDiffer == Endpoints.GITLAB_COMMENT_PR_TYPE.ToLower()) return "https://bunbun.cloud/admin/funkymonke/img/prcommentking.png";
             else if (actionDiffer == Endpoints.GITLAB_COMMENT_COMMIT_TYPE.ToLower()) return "https://bunbun.cloud/admin/funkymonke/img/commitcommented.png";
             else return "https://bunbun.cloud/admin/funkymonke/img/_drip_monkey_banner.gif";
         }

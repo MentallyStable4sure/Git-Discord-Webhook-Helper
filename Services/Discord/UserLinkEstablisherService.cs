@@ -37,6 +37,31 @@ namespace MentallyStable.GitHelper.Services.Discord
             return null;
         }
 
+        public List<GitToDiscordLinkData> GetConnections(string[] identifiers)
+        {
+            var connections = new List<GitToDiscordLinkData>();
+            foreach (var link in _establishedConnections)
+            {
+                if (link.DiscordSnowflakeId <= 0) continue;
+                if (!identifiers.Contains(link.GitUniqueIdentifier)) continue;
+                connections.Add(link);
+            }
+
+            return connections;
+        }
+
+        public GitToDiscordLinkData GetConnection(string identifier)
+        {
+            foreach (var link in _establishedConnections)
+            {
+                if (link.DiscordSnowflakeId <= 0) continue;
+                if (!identifier.Contains(link.GitUniqueIdentifier)) continue;
+                return link;
+            }
+
+            return null;
+        }
+
         public GitToDiscordLinkData GetConnectionStrict(string identifier)
         {
             foreach (var link in _establishedConnections)

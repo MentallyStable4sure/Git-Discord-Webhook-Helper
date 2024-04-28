@@ -19,6 +19,5 @@ namespace MentallyStable.GitHelper.Data.Git.Gitlab
         public GitlabMergeRequest MergeRequest = new GitlabMergeRequest();
         public GitlabRepository Reposity = new GitlabRepository();
         public GitlabUser Author = new GitlabUser();
-
     }
 }
