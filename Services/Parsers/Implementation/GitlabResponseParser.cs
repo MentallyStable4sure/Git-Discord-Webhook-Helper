@@ -55,8 +55,6 @@ namespace MentallyStable.GitHelper.Services.Parsers.Implementation
             {
                 description += $"{word} ";
             }
-            description = description.Replace('#', ' '); //Removing headings
-
             return description;
         }
     }

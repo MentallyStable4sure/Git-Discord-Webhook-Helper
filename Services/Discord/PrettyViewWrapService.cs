@@ -1,9 +1,8 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
+﻿using DSharpPlus.Entities;
 using MentallyStable.GitHelper.Helpers;
 using MentallyStable.GitHelper.Data.Database;
-using MentallyStable.GitHelper.Helpers.Gitlab;
 using MentallyStable.GitHelper.Data.Git.Gitlab;
+using DSharpPlus;
 using MentallyStable.GitHelper.Services.Parsers;
 
 namespace MentallyStable.GitHelper.Services.Discord
@@ -14,20 +13,12 @@ namespace MentallyStable.GitHelper.Services.Discord
         private readonly DiscordClient _client;
         private readonly IResponseParser<GitlabResponse> _parser;
 
-        private readonly BaseGitHelper[] _gitlabHelpers;
-
         public PrettyViewWrapService(UserLinkEstablisherService establisherService,
             DiscordClient discordClient, IResponseParser<GitlabResponse> parser)
         {
             _establisherService = establisherService;
             _client = discordClient;
             _parser = parser;
-
-            _gitlabHelpers = new BaseGitHelper[] {
-                new GitlabMergeRequestHelper(Endpoints.GITLAB_MERGE_REQUEST_ATTRIBUTE, _client, _parser, _establisherService),
-                new GitlabCommentHelper(Endpoints.GITLAB_COMMENT_ATTRIBUTE, _client, _parser, _establisherService),
-                new GitlabCommitHelper(Endpoints.GITLAB_PUSH_ATTRIBUTE, _client, _parser, _establisherService)
-            };
         }
 
         public Task InitializeService() => Task.CompletedTask;
@@ -75,14 +66,31 @@ namespace MentallyStable.GitHelper.Services.Discord
 
         private async Task<string> GetDescriptionBasedOnDescriptor(string descriptor, GitlabResponse response)
         {
-            string info = string.Empty;
-            foreach (var helper in _gitlabHelpers)
+            string author = response.ObjectAttributes.LastCommit.Author.Name;
+            if (string.IsNullOrEmpty(author)) author = response.MergeRequest.LastCommit.Author.Name;
+            if (string.IsNullOrEmpty(author)) author = response.User.Name;
+
+            string lastCommit = string.IsNullOrEmpty(response.MergeRequest.LastCommit.Message) ? response.ObjectAttributes.LastCommit.Message : response.MergeRequest.LastCommit.Message;
+            if (string.IsNullOrEmpty(lastCommit)) lastCommit = string.Empty;
+            else
             {
-                info = await helper.ShowAccordingToType(descriptor, response);
-                if (string.IsNullOrEmpty(info)) continue;
-                else break;
+                var parsedLinksLastCommit = await _parser.ParseLinks(_client, lastCommit, _establisherService);
+                lastCommit = $"\n\n>>> 🚩 Last commit: {parsedLinksLastCommit}";
             }
 
+            string info = string.Empty;
+            if (descriptor == Endpoints.GITLAB_COMMENT_ATTRIBUTE)
+            {
+                var note = await _parser.ParseLinks(_client, response.ObjectAttributes.Note, _establisherService);
+                info = $"✨ ** {response.Project.PathWithNamespace} ** ✨\n📌 __Author:__ ** {author} **\n\n> **{response.User.Name}** commented: \n `{note}`";
+            }
+            else
+            {
+                var description = await _parser.ParseLinks(_client, response.ObjectAttributes.Description, _establisherService);
+                info = $"✨ ** {response.Project.PathWithNamespace} ** ✨\n📌 __Author:__ ** {author} **\n\n> 🎯 __Target:__ ** {response.ObjectAttributes.TargetBranch} **\n> 📦 __Source:__ ** {response.ObjectAttributes.SourceBranch} **\n `{description}` ";
+            }
+
+            info += lastCommit;
             return info;
         }
     }
